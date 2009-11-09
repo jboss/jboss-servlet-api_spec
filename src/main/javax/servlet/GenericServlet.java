@@ -1,23 +1,64 @@
 /*
-* Licensed to the Apache Software Foundation (ASF) under one or more
-* contributor license agreements.  See the NOTICE file distributed with
-* this work for additional information regarding copyright ownership.
-* The ASF licenses this file to You under the Apache License, Version 2.0
-* (the "License"); you may not use this file except in compliance with
-* the License.  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved.
+ *
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ *
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ *
+ * Contributor(s):
+ *
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ *
+ *
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
+ * Copyright 2004 The Apache Software Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+
 package javax.servlet;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -42,16 +83,15 @@ import java.util.Enumeration;
  *
  *
  * @author 	Various
- * @version 	$Version$
- *
- *
- *
  */
 
  
 public abstract class GenericServlet 
     implements Servlet, ServletConfig, java.io.Serializable
 {
+    private static final String LSTRING_FILE = "javax.servlet.LocalStrings";
+    private static ResourceBundle lStrings =
+        ResourceBundle.getBundle(LSTRING_FILE);
 
     private transient ServletConfig config;
     
@@ -62,21 +102,17 @@ public abstract class GenericServlet
      * is done by one of the <code>init</code> methods.
      *
      */
-
     public GenericServlet() { }
     
     
-    
-   /**
+    /**
      * Called by the servlet container to indicate to a servlet that the
      * servlet is being taken out of service.  See {@link Servlet#destroy}.
      *
      * 
      */
-
     public void destroy() {
     }
-    
     
     
     /**
@@ -95,13 +131,17 @@ public abstract class GenericServlet
      *				of the initialization parameter
      *
      */ 
-
     public String getInitParameter(String name) {
-	return getServletConfig().getInitParameter(name);
+        ServletConfig sc = getServletConfig();
+        if (sc == null) {
+            throw new IllegalStateException(
+                lStrings.getString("err.servlet_config_not_initialized"));
+        }
+
+        return sc.getInitParameter(name);
     }
     
     
-
    /**
     * Returns the names of the servlet's initialization parameters 
     * as an <code>Enumeration</code> of <code>String</code> objects,
@@ -116,15 +156,16 @@ public abstract class GenericServlet
     * @return Enumeration 	an enumeration of <code>String</code>
     *				objects containing the names of 
     *				the servlet's initialization parameters
-    *
     */
+    public Enumeration<String> getInitParameterNames() {
+        ServletConfig sc = getServletConfig();
+        if (sc == null) {
+            throw new IllegalStateException(
+                lStrings.getString("err.servlet_config_not_initialized"));
+        }
 
-    public Enumeration getInitParameterNames() {
-	return getServletConfig().getInitParameterNames();
+        return sc.getInitParameterNames();
     }   
-    
-     
- 
      
 
     /**
@@ -132,14 +173,10 @@ public abstract class GenericServlet
      *
      * @return ServletConfig 	the <code>ServletConfig</code> object
      *				that initialized this servlet
-     *
-     */
-    
+     */    
     public ServletConfig getServletConfig() {
 	return config;
     }
-    
-    
  
     
     /**
@@ -153,16 +190,17 @@ public abstract class GenericServlet
      * @return ServletContext 	the <code>ServletContext</code> object
      *				passed to this servlet by the <code>init</code>
      *				method
-     *
      */
-
     public ServletContext getServletContext() {
-	return getServletConfig().getServletContext();
+        ServletConfig sc = getServletConfig();
+        if (sc == null) {
+            throw new IllegalStateException(
+                lStrings.getString("err.servlet_config_not_initialized"));
+        }
+
+        return sc.getServletContext();
     }
 
-
-
- 
 
     /**
      * Returns information about the servlet, such as 
@@ -174,18 +212,13 @@ public abstract class GenericServlet
      *
      * @return String 		information about this servlet, by default an
      * 				empty string
-     *
-     */
-    
+     */    
     public String getServletInfo() {
 	return "";
     }
 
 
-
-
     /**
-     *
      * Called by the servlet container to indicate to a servlet that the
      * servlet is being placed into service.  See {@link Servlet#init}.
      *
@@ -201,23 +234,16 @@ public abstract class GenericServlet
      * @exception ServletException 	if an exception occurs that
      *					interrupts the servlet's normal
      *					operation
-     *
      * 
      * @see 				UnavailableException
-     *
      */
-
     public void init(ServletConfig config) throws ServletException {
 	this.config = config;
 	this.init();
     }
 
 
-
-
-
     /**
-     *
      * A convenience method which can be overridden so that there's no need
      * to call <code>super.init(config)</code>.
      *
@@ -230,31 +256,22 @@ public abstract class GenericServlet
      * @exception ServletException 	if an exception occurs that
      *					interrupts the servlet's
      *					normal operation
-     *
      */
-    
     public void init() throws ServletException {
 
     }
     
 
-
-
     /**
-     * 
      * Writes the specified message to a servlet log file, prepended by the
      * servlet's name.  See {@link ServletContext#log(String)}.
      *
      * @param msg 	a <code>String</code> specifying
      *			the message to be written to the log file
-     *
-     */
-     
+     */     
     public void log(String msg) {
 	getServletContext().log(getServletName() + ": "+ msg);
     }
-   
-   
    
    
     /**
@@ -269,14 +286,10 @@ public abstract class GenericServlet
      *
      * @param t			the <code>java.lang.Throwable</code> error
      * 				or exception
-     *
-     *
-     */
-   
+     */   
     public void log(String message, Throwable t) {
 	getServletContext().log(getServletName() + ": " + message, t);
     }
-    
     
     
     /**
@@ -285,8 +298,6 @@ public abstract class GenericServlet
      * 
      * <p>This method is declared abstract so subclasses, such as 
      * <code>HttpServlet</code>, must override it.
-     *
-     *
      *
      * @param req 	the <code>ServletRequest</code> object
      *			that contains the client's request
@@ -300,25 +311,25 @@ public abstract class GenericServlet
      *
      * @exception IOException 		if an input or output
      *					exception occurs
-     *
      */
 
     public abstract void service(ServletRequest req, ServletResponse res)
 	throws ServletException, IOException;
     
 
-
     /**
      * Returns the name of this servlet instance.
      * See {@link ServletConfig#getServletName}.
      *
      * @return          the name of this servlet instance
-     *
-     *
-     *
      */
-
     public String getServletName() {
-        return config.getServletName();
+        ServletConfig sc = getServletConfig();
+        if (sc == null) {
+            throw new IllegalStateException(
+                lStrings.getString("err.servlet_config_not_initialized"));
+        }
+
+        return sc.getServletName();
     }
 }

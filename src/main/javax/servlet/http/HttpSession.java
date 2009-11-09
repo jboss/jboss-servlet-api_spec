@@ -1,19 +1,57 @@
 /*
-* Licensed to the Apache Software Foundation (ASF) under one or more
-* contributor license agreements.  See the NOTICE file distributed with
-* this work for additional information regarding copyright ownership.
-* The ASF licenses this file to You under the Apache License, Version 2.0
-* (the "License"); you may not use this file except in compliance with
-* the License.  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved.
+ *
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ *
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ *
+ * Contributor(s):
+ *
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ *
+ *
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
+ * Copyright 2004 The Apache Software Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package javax.servlet.http;
 
 import java.util.Enumeration;
@@ -65,18 +103,12 @@ import javax.servlet.ServletContext;
  * will not be directly visible in another.
  *
  * @author	Various
- * @version	$Version$
- *
  *
  * @see 	HttpSessionBindingListener
  * @see 	HttpSessionContext
- *
  */
 
 public interface HttpSession {
-
-
-
 
     /**
      *
@@ -90,38 +122,27 @@ public interface HttpSession {
      *
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
-     *
      */
-
     public long getCreationTime();
     
-    
-    
-    
+        
     /**
-     *
      * Returns a string containing the unique identifier assigned 
      * to this session. The identifier is assigned 
      * by the servlet container and is implementation dependent.
      * 
      * @return				a string specifying the identifier
      *					assigned to this session
-     *
-     * @exception IllegalStateException	if this method is called on an
-     *					invalidated session
-     *
      */
-
     public String getId();
-    
-    
     
 
     /**
      *
      * Returns the last time the client sent a request associated with
      * this session, as the number of milliseconds since midnight
-     * January 1, 1970 GMT, and marked by the time the container received the request. 
+     * January 1, 1970 GMT, and marked by the time the container received the
+     * request. 
      *
      * <p>Actions that your application takes, such as getting or setting
      * a value associated with the session, do not affect the access
@@ -135,77 +156,63 @@ public interface HttpSession {
      *
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
-     *
      */
-
     public long getLastAccessedTime();
     
     
     /**
-    * Returns the ServletContext to which this session belongs.
-    *    
-    * @return The ServletContext object for the web application
-    * @since 2.3
-    */
-
+     * Returns the ServletContext to which this session belongs.
+     *    
+     * @return The ServletContext object for the web application
+     * @since Servlet 2.3
+     */
     public ServletContext getServletContext();
 
 
     /**
-     *
      * Specifies the time, in seconds, between client requests before the 
-     * servlet container will invalidate this session.  A negative time
-     * indicates the session should never timeout.
+     * servlet container will invalidate this session. 
+     *
+     * <p>An <tt>interval</tt> value of zero or less indicates that the
+     * session should never timeout.
      *
      * @param interval		An integer specifying the number
      * 				of seconds 
-     *
-     */
-    
+     */    
     public void setMaxInactiveInterval(int interval);
 
 
-
-
-   /**
-    * Returns the maximum time interval, in seconds, that 
-    * the servlet container will keep this session open between 
-    * client accesses. After this interval, the servlet container
-    * will invalidate the session.  The maximum time interval can be set
-    * with the <code>setMaxInactiveInterval</code> method.
-    * A negative time indicates the session should never timeout.
-    *  
-    *
-    * @return		an integer specifying the number of
-    *			seconds this session remains open
-    *			between client requests
-    *
-    * @see		#setMaxInactiveInterval
-    *
-    *
-    */
-
+    /**
+     * Returns the maximum time interval, in seconds, that 
+     * the servlet container will keep this session open between 
+     * client accesses. After this interval, the servlet container
+     * will invalidate the session.  The maximum time interval can be set
+     * with the <code>setMaxInactiveInterval</code> method.
+     *
+     * <p>A return value of zero or less indicates that the
+     * session will never timeout.
+     *
+     * @return		an integer specifying the number of
+     *			seconds this session remains open
+     *			between client requests
+     *
+     * @see		#setMaxInactiveInterval
+     */
     public int getMaxInactiveInterval();
     
-    
 
-
-   /**
-    *
-    * @deprecated 	As of Version 2.1, this method is
-    *			deprecated and has no replacement.
-    *			It will be removed in a future
-    *			version of the Java Servlet API.
-    *
-    */
-
-    public HttpSessionContext getSessionContext();
-    
-    
-    
-    
     /**
      *
+     * @deprecated 	As of Version 2.1, this method is
+     *			deprecated and has no replacement.
+     *			It will be removed in a future
+     *			version of the Java Servlet API.
+     *
+     */
+    public HttpSessionContext getSessionContext();
+    
+
+    /**
      * Returns the object bound with the specified name in this session, or
      * <code>null</code> if no object is bound under the name.
      *
@@ -215,16 +222,11 @@ public interface HttpSession {
      *
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
-     *
      */
-  
     public Object getAttribute(String name);
     
     
-    
-    
     /**
-     *
      * @deprecated 	As of Version 2.2, this method is
      * 			replaced by {@link #getAttribute}.
      *
@@ -234,16 +236,11 @@ public interface HttpSession {
      *
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
-     *
      */
-  
     public Object getValue(String name);
-    
-    
-    
+        
 
     /**
-     *
      * Returns an <code>Enumeration</code> of <code>String</code> objects
      * containing the names of all the objects bound to this session. 
      *
@@ -254,16 +251,11 @@ public interface HttpSession {
      *
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
-     *
-     */
-    
-    public Enumeration getAttributeNames();
-    
-    
+     */    
+    public Enumeration<String> getAttributeNames();
     
 
     /**
-     *
      * @deprecated 	As of Version 2.2, this method is
      * 			replaced by {@link #getAttributeNames}
      *
@@ -274,12 +266,8 @@ public interface HttpSession {
      *
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
-     *
      */
-    
     public String[] getValueNames();
-    
-    
     
 
     /**
@@ -309,17 +297,11 @@ public interface HttpSession {
      *
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
-     *
      */
- 
     public void setAttribute(String name, Object value);
     
 
-
-
-    
     /**
-     *
      * @deprecated 	As of Version 2.2, this method is
      * 			replaced by {@link #setAttribute}
      *
@@ -330,17 +312,11 @@ public interface HttpSession {
      *
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
-     *
      */
- 
     public void putValue(String name, Object value);
 
 
-
-
-
     /**
-     *
      * Removes the object bound with the specified name from
      * this session. If the session does not have an object
      * bound with the specified name, this method does nothing.
@@ -351,8 +327,6 @@ public interface HttpSession {
      * <code>HttpSessionBindingListener.valueUnbound</code>. The container
      * then notifies any <code>HttpSessionAttributeListener</code>s in the web 
      * application.
-     * 
-     * 
      *
      * @param name				the name of the object to
      *						remove from this session
@@ -360,15 +334,10 @@ public interface HttpSession {
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
      */
-
     public void removeAttribute(String name);
 
 
-
-
-
     /**
-     *
      * @deprecated 	As of Version 2.2, this method is
      * 			replaced by {@link #removeAttribute}
      *
@@ -378,29 +347,20 @@ public interface HttpSession {
      * @exception IllegalStateException	if this method is called on an
      *					invalidated session
      */
-
     public void removeValue(String name);
 
 
-
-
     /**
-     *
      * Invalidates this session then unbinds any objects bound
      * to it. 
      *
      * @exception IllegalStateException	if this method is called on an
      *					already invalidated session
-     *
      */
-
     public void invalidate();
     
     
-    
-    
     /**
-     *
      * Returns <code>true</code> if the client does not yet know about the
      * session or if the client chooses not to join the session.  For 
      * example, if the server used only cookie-based sessions, and
@@ -413,12 +373,8 @@ public interface HttpSession {
      *
      * @exception IllegalStateException	if this method is called on an
      *					already invalidated session
-     *
      */
-
     public boolean isNew();
-
-
 
 }
 

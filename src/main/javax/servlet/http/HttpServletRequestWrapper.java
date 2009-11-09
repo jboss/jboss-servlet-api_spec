@@ -1,35 +1,74 @@
 /*
-* Licensed to the Apache Software Foundation (ASF) under one or more
-* contributor license agreements.  See the NOTICE file distributed with
-* this work for additional information regarding copyright ownership.
-* The ASF licenses this file to You under the Apache License, Version 2.0
-* (the "License"); you may not use this file except in compliance with
-* the License.  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved.
+ *
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ *
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ *
+ * Contributor(s):
+ *
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ *
+ *
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
+ * Copyright 2004 The Apache Software Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package javax.servlet.http;
 
+import java.io.IOException;
+import java.util.*;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequestWrapper;
-import java.util.Enumeration;
 
 /**
- * 
- * Provides a convenient implementation of the HttpServletRequest interface that
- * can be subclassed by developers wishing to adapt the request to a Servlet.
- * This class implements the Wrapper or Decorator pattern. Methods default to
- * calling through to the wrapped request object.
- * 
+ * Provides a convenient implementation of the HttpServletRequest interface
+ * that can be subclassed by developers wishing to adapt the request to a
+ * Servlet.
  *
- * @see 	javax.servlet.http.HttpServletRequest
-  * @since	v 2.3
- *
+ * <p>This class implements the Wrapper or Decorator pattern. Methods default
+ * to calling through to the wrapped request object.
+ * 
+ * @see javax.servlet.http.HttpServletRequest
+ * @since Servlet 2.3
  */
 
 
@@ -84,7 +123,7 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
      * The default behavior of this method is to return getHeaders(String name)
      * on the wrapped request object.
      */
-    public Enumeration getHeaders(String name) {
+    public Enumeration<String> getHeaders(String name) {
 	return this._getHttpServletRequest().getHeaders(name);
     }  
 
@@ -93,13 +132,13 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
      * on the wrapped request object.
      */
   
-    public Enumeration getHeaderNames() {
+    public Enumeration<String> getHeaderNames() {
 	return this._getHttpServletRequest().getHeaderNames();
     }
     
     /**
-     * The default behavior of this method is to return getIntHeader(String name)
-     * on the wrapped request object.
+     * The default behavior of this method is to return
+     * getIntHeader(String name) on the wrapped request object.
      */
 
      public int getIntHeader(String name) {
@@ -242,13 +281,15 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
 	return this._getHttpServletRequest().isRequestedSessionIdFromCookie();
     }
     
-    	  /**
+
+    /**
      * The default behavior of this method is to return isRequestedSessionIdFromURL()
      * on the wrapped request object.
      */ 
     public boolean isRequestedSessionIdFromURL() {
-	return this._getHttpServletRequest().isRequestedSessionIdFromURL();
+        return this._getHttpServletRequest().isRequestedSessionIdFromURL();
     }
+
     
     /**
      * The default behavior of this method is to return isRequestedSessionIdFromUrl()
@@ -259,5 +300,62 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
     }
 
 
+    /**
+     * The default behavior of this method is to call authenticate on the
+     * wrapped request object.
+     *
+     * @since Servlet 3.0
+     */
+    public boolean authenticate(HttpServletResponse response)
+            throws IOException, ServletException {
+        return this._getHttpServletRequest().authenticate(response);
+    }
+
+
+    /**
+     * The default behavior of this method is to call login on the wrapped
+     * request object.
+     *
+     * @since Servlet 3.0
+     */
+    public void login(String username, String password)
+            throws ServletException {
+        this._getHttpServletRequest().login(username,password);
+    }
+
+
+    /**
+     * The default behavior of this method is to call login on the wrapped
+     * request object.
+     *
+     * @since Servlet 3.0
+     */
+    public void logout() throws ServletException {
+        this._getHttpServletRequest().logout();
+    }
+
+    /**
+     * The default behavior of this method is to call getParts on the wrapped
+     * request object.
+     *
+     * <p>Any changes to the returned <code>Collection</code> must not 
+     * affect this <code>HttpServletRequestWrapper</code>.
+     *
+     * @since Servlet 3.0
+     */
+    public Collection<Part> getParts() throws IOException, ServletException {
+        return this._getHttpServletRequest().getParts(); 
+    }
+
+    /**
+     * The default behavior of this method is to call getPart on the wrapped
+     * request object.
+     *
+     * @since Servlet 3.0
+     */
+    public Part getPart(String name) throws IOException, ServletException {
+        return this._getHttpServletRequest().getPart(name); 
     
+    }
+
 }

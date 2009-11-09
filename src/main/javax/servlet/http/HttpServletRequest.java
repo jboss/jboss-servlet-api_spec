@@ -1,24 +1,63 @@
 /*
-* Licensed to the Apache Software Foundation (ASF) under one or more
-* contributor license agreements.  See the NOTICE file distributed with
-* this work for additional information regarding copyright ownership.
-* The ASF licenses this file to You under the Apache License, Version 2.0
-* (the "License"); you may not use this file except in compliance with
-* the License.  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved.
+ *
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ *
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ *
+ * Contributor(s):
+ *
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ *
+ *
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
+ * Copyright 2004 The Apache Software Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package javax.servlet.http;
 
+import java.io.IOException;
+import java.util.*;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
-import java.util.Enumeration;
 
 /**
  *
@@ -31,9 +70,6 @@ import java.util.Enumeration;
  *
  *
  * @author 	Various
- * @version	$Version$
- *
- *
  */
 
 public interface HttpServletRequest extends ServletRequest {
@@ -163,7 +199,6 @@ public interface HttpServletRequest extends ServletRequest {
 
 
 
-
     /**
      *
      * Returns all the values of the specified request header
@@ -192,7 +227,7 @@ public interface HttpServletRequest extends ServletRequest {
      *
      */			
 
-    public Enumeration getHeaders(String name); 
+    public Enumeration<String> getHeaders(String name); 
     
     
     
@@ -219,7 +254,7 @@ public interface HttpServletRequest extends ServletRequest {
      *
      */
 
-    public Enumeration getHeaderNames();
+    public Enumeration<String> getHeaderNames();
     
     
     
@@ -329,17 +364,26 @@ public interface HttpServletRequest extends ServletRequest {
     /**
      *
      * Returns the portion of the request URI that indicates the context
-     * of the request.  The context path always comes first in a request
-     * URI.  The path starts with a "/" character but does not end with a "/"
-     * character.  For servlets in the default (root) context, this method
+     * of the request. The context path always comes first in a request
+     * URI. The path starts with a "/" character but does not end with a "/"
+     * character. For servlets in the default (root) context, this method
      * returns "". The container does not decode this string.
      *
+     * <p>It is possible that a servlet container may match a context by
+     * more than one context path. In such cases this method will return the
+     * actual context path used by the request and it may differ from the
+     * path returned by the
+     * {@link javax.servlet.ServletContext#getContextPath()} method.
+     * The context path returned by
+     * {@link javax.servlet.ServletContext#getContextPath()}
+     * should be considered as the prime or preferred context path of the
+     * application.
      *
      * @return		a <code>String</code> specifying the
      *			portion of the request URI that indicates the context
      *			of the request
      *
-     *
+     * @see javax.servlet.ServletContext#getContextPath()
      */
 
     public String getContextPath();
@@ -486,6 +530,11 @@ public interface HttpServletRequest extends ServletRequest {
      * number, and server path, but it does not include query
      * string parameters.
      *
+     * <p>If this request has been forwarded using
+     * {@link javax.servlet.RequestDispatcher#forward}, the server path in the
+     * reconstructed URL must reflect the path used to obtain the
+     * RequestDispatcher, and not the server path specified by the client.
+     *
      * <p>Because this method returns a <code>StringBuffer</code>,
      * not a string, you can modify the URL easily, for example,
      * to append query parameters.
@@ -592,6 +641,9 @@ public interface HttpServletRequest extends ServletRequest {
      *
      * Checks whether the requested session ID is still valid.
      *
+     * <p>If the client did not specify any session ID, this method returns
+     * <code>false</code>.     
+     *
      * @return			<code>true</code> if this
      *				request has an id for a valid session
      *				in the current session context;
@@ -657,5 +709,151 @@ public interface HttpServletRequest extends ServletRequest {
     public boolean isRequestedSessionIdFromUrl();
 
 
+    /**
+     * Use the container login mechanism configured for the 
+     * <code>ServletContext</code> to authenticate the user making 
+     * this request. 
+     * 
+     * <p>This method may modify and commit the argument 
+     * <code>HttpServletResponse</code>.
+     * 
+     * @param response The <code>HttpServletResponse</code> 
+     * associated with this <code>HttpServletRequest</code>
+     * 
+     * @return <code>true</code> when non-null values were or have been
+     * established as the values returned by <code>getUserPrincipal</code>, 
+     * <code>getRemoteUser</code>, and <code>getAuthType</code>. Return 
+     * <code>false</code> if authentication is incomplete and the underlying 
+     * login mechanism has committed, in the response, the message (e.g., 
+     * challenge) and HTTP status code to be returned to the user.
+     *
+     * @throws IOException if an input or output error occurred while
+     * reading from this request or writing to the given response
+     *
+     * @throws IllegalStateException if the login mechanism attempted to
+     * modify the response and it was already committed
+     * 
+     * @throws ServletException if the authentication failed and
+     * the caller is responsible for handling the error (i.e., the 
+     * underlying login mechanism did NOT establish the message and 
+     * HTTP status code to be returned to the user)
+     *
+     * @since Servlet 3.0
+     */
+    public boolean authenticate(HttpServletResponse response) 
+	throws IOException,ServletException;
+
+
+    /**
+     * Validate the provided username and password in the password validation 
+     * realm used by the web container login mechanism configured for the 
+     * <code>ServletContext</code>.
+     * 
+     * <p>This method returns without throwing a <code>ServletException</code> 
+     * when the login mechanism configured for the <code>ServletContext</code> 
+     * supports username password validation, and when, at the time of the
+     * call to login, the identity of the caller of the request had
+     * not been established (i.e, all of <code>getUserPrincipal</code>, 
+     * <code>getRemoteUser</code>, and <code>getAuthType</code> return null), 
+     * and when validation of the provided credentials is successful. 
+     * Otherwise, this method throws a <code>ServletException</code> as
+     * described below.
+     *  
+     * <p>When this method returns without throwing an exception, it must
+     * have established non-null values as the values returned by
+     * <code>getUserPrincipal</code>, <code>getRemoteUser</code>, and 
+     * <code>getAuthType</code>.
+     * 
+     * @param username The <code>String</code> value corresponding to
+     * the login identifier of the user.
+     * 
+     * @param password The password <code>String</code> corresponding
+     * to the identified user.
+     *
+     * @exception	ServletException    if the configured login mechanism 
+     *                                      does not support username 
+     *                                      password authentication, or if a 
+     *                                      non-null caller identity had 
+     *                                      already been established (prior 
+     *                                      to the call to login), or if 
+     *                                      validation of the provided 
+     *                                      username and password fails.
+     *
+     * @since Servlet 3.0
+     */
+    public void login(String username, String password) 
+	throws ServletException;
+    
+    
+    /**
+     * Establish <code>null</code> as the value returned when 
+     * <code>getUserPrincipal</code>, <code>getRemoteUser</code>, 
+     * and <code>getAuthType</code> is called on the request.
+     *
+     * @exception ServletException if logout fails
+     *
+     * @since Servlet 3.0
+     */
+    public void logout() throws ServletException;
+
+
+    /**
+     * Gets all the {@link Part} components of this request, provided
+     * that it is of type <tt>multipart/form-data</tt>.
+     *
+     * <p>If this request is of type <tt>multipart/form-data</tt>, but
+     * does not contain any Part components, the returned
+     * <tt>Collection</tt> will be empty.
+     *
+     * <p>Any changes to the returned <code>Collection</code> must not 
+     * affect this <code>HttpServletRequest</code>.
+     *
+     * @return a (possibly empty) <code>Collection</code> of the
+     * Part components of this request
+     *
+     * @throws IOException if an I/O error occurred during the retrieval
+     * of the {@link Part} components of this request
+     *
+     * @throws ServletException if this request is not of type
+     * <tt>multipart/form-data</tt>
+     *
+     * @throws IllegalStateException if the request body is larger than
+     * <tt>maxRequestSize</tt>, or any Part in the request is larger than
+     * <tt>maxFileSize</tt>
+     *
+     * @see javax.servlet.annotation.MultipartConfig#maxFileSize
+     * @see javax.servlet.annotation.MultipartConfig#maxRequestSize
+     *
+     * @since Servlet 3.0
+     */
+    public Collection<Part> getParts() throws IOException, ServletException;
+
+
+    /**
+     * Gets the {@link Part} with the given name.
+     *
+     * @param name the name of the requested Part
+     *
+     * @return The Part with the given name, or <tt>null</tt> if this
+     * request is of type <tt>multipart/form-data</tt>, but does not
+     * contain the requested Part
+     *
+     * @throws IOException if an I/O error occurred during the retrieval
+     * of the requested Part
+     * @throws ServletException if this request is not of type
+     * <tt>multipart/form-data</tt>
+     * @throws IllegalStateException if the request body is larger than
+     * <tt>maxRequestSize</tt>, or any Part in the request is larger than
+     * <tt>maxFileSize</tt>
+     *
+     * @see javax.servlet.annotation.MultipartConfig#maxFileSize
+     * @see javax.servlet.annotation.MultipartConfig#maxRequestSize
+     *
+     * @since Servlet 3.0
+     */
+    public Part getPart(String name) throws IOException, ServletException;
     
 }
+
+
+
