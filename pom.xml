@@ -32,20 +32,4 @@
     <url>https://github.com/jboss/jboss-servlet-api_spec</url>
   </scm>
   
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <doctitle>Java Servlet 3.0 API Documentation</doctitle>
-          <links>
-            <link>http://java.sun.com/j2se/1.5/docs/api</link>
-          </links>
-          <windowtitle>Java Servlet 3.0 API Documentation</windowtitle>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
-  
 </project>
