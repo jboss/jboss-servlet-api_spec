@@ -50,6 +50,17 @@
             <goals>
               <goal>manifest</goal>
             </goals>
+            <configuration>
+              <instructions>
+                <!--
+                   The JavaEE marketing version of the javax.servlet package was incremented 
+                   to 3.0.  However, this API is still compatible with servlet 2.x.
+                -->
+                <Export-Package>
+                  javax.servlet*;version=3.0
+                </Export-Package>
+              </instructions>
+            </configuration>
           </execution>
         </executions>
       </plugin>
