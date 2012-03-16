@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>8</version>
+    <version>9</version>
   </parent>
 
   <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -17,7 +17,7 @@
 
   <name>Java Servlet 3.0 API</name>
   <description>The Java Servlet 3.0 API classes</description>
-  
+
   <licenses>
     <license>
       <name>Common Development and Distribution License</name>
@@ -36,5 +36,33 @@
     <developerConnection>scm:git:git@github.com:jboss/jboss-servlet-api_spec.git</developerConnection>
     <url>https://github.com/jboss/jboss-servlet-api_spec</url>
   </scm>
-  
+
+  <build>
+    <plugins>
+      <!-- Generate the OSGi jar Manifest. -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Add the OSGi Manifest to the main jar -->
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
