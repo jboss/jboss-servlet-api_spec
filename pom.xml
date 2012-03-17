@@ -76,22 +76,45 @@
             <goals>
               <goal>manifest</goal>
             </goals>
-            <configuration>
-              <instructions>
-                <Export-Package>
-                  javax.servlet*;version=2.5
-                </Export-Package>
-              </instructions>
-            </configuration>
           </execution>
         </executions>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+            </manifest>
+          </archive>
+          <instructions>
+            <Specification-Title>JSR-000154 Java(TM) Servlet 2.5</Specification-Title>
+            <Specification-Vendor>Oracle</Specification-Vendor>
+            <Specification-Version>2.5</Specification-Version>
+            <Export-Package>
+              javax.servlet*;version=2.5
+            </Export-Package>
+          </instructions>
+        </configuration>
       </plugin>
       <!-- Add the OSGi Manifest to the main jar -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Specification-Title>JSR-000154 Java(TM) Servlet 2.5</Specification-Title>
+              <Specification-Vendor>Oracle</Specification-Vendor>
+              <Specification-Version>2.5</Specification-Version>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
