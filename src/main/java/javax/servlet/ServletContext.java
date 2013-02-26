@@ -1,27 +1,31 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 1997-2009 Sun Microsystems, Inc. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License. You can obtain
- * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
- * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * may not use this file except in compliance with the License.  You can
+ * obtain a copy of the License at
+ * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
- * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
- * Sun designates this particular file as subject to the "Classpath" exception
- * as provided by Sun in the GPL Version 2 section of the License file that
- * accompanied this code.  If applicable, add the following below the License
- * Header, with the fields enclosed by brackets [] replaced by your own
- * identifying information: "Portions Copyrighted [year]
- * [name of copyright owner]"
+ * file and include the License file at packager/legal/LICENSE.txt.
+ *
+ * GPL Classpath Exception:
+ * Oracle designates this particular file as subject to the "Classpath"
+ * exception as provided by Oracle in the GPL Version 2 section of the License
+ * file that accompanied this code.
+ *
+ * Modifications:
+ * If applicable, add the following below the License Header, with the fields
+ * enclosed by brackets [] replaced by your own identifying information:
+ * "Portions Copyright [year] [name of copyright owner]"
  *
  * Contributor(s):
- *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -119,9 +123,11 @@ public interface ServletContext {
      *
      * <p>The context path is the portion of the request URI that is used
      * to select the context of the request. The context path always comes
-     * first in a request URI. The path starts with a <tt>/</tt> character
-     * but does not end with a <tt>/</tt> character. For servlets in the
-     * default (root) context, this method returns "".
+     * first in a request URI. If this context is the “default” context
+     * rooted at the base of the Web server’s URL name space, this path
+     * will be an empty string. Otherwise, if the context is not rooted at
+     * the root of the server’s name space, the path starts with a /
+     * character but does not end with a / character.
      *
      * <p>It is possible that a servlet container may match a context by
      * more than one context path. In such cases the
@@ -769,6 +775,9 @@ public interface ServletContext {
      * @throws IllegalStateException if this ServletContext has already
      * been initialized
      *
+     * @throws IllegalArgumentException if <code>servletName</code> is null
+     * or an empty String
+     *
      * @throws UnsupportedOperationException if this ServletContext was
      * passed to the {@link ServletContextListener#contextInitialized} method
      * of a {@link ServletContextListener} that was neither declared in
@@ -813,7 +822,8 @@ public interface ServletContext {
      * with {@link javax.servlet.annotation.WebListener}
      *
      * @throws IllegalArgumentException if the given servlet instance 
-     * implements {@link SingleThreadModel}
+     * implements {@link SingleThreadModel}, or <code>servletName</code> is null
+     * or an empty String
      *
      * @since Servlet 3.0
      */
@@ -854,6 +864,9 @@ public interface ServletContext {
      *
      * @throws IllegalStateException if this ServletContext has already
      * been initialized
+     *
+     * @throws IllegalArgumentException if <code>servletName</code> is null
+     * or an empty String
      *
      * @throws UnsupportedOperationException if this ServletContext was
      * passed to the {@link ServletContextListener#contextInitialized} method
@@ -935,7 +948,7 @@ public interface ServletContext {
      * ServletRegistration objects corresponding to all servlets that have
      * been added via one of the <tt>addServlet</tt> methods.
      *
-     * <p>Any changes to the returned Map must not affect this
+     * <p>If permitted, any changes to the returned Map must not affect this
      * ServletContext.
      *
      * @return Map of the (complete and preliminary) ServletRegistration
@@ -985,6 +998,9 @@ public interface ServletContext {
      * @throws IllegalStateException if this ServletContext has already
      * been initialized
      *
+     * @throws IllegalArgumentException if <code>filterName</code> is null or
+     * an empty String
+     *
      * @throws UnsupportedOperationException if this ServletContext was
      * passed to the {@link ServletContextListener#contextInitialized} method
      * of a {@link ServletContextListener} that was neither declared in
@@ -1021,6 +1037,9 @@ public interface ServletContext {
      *
      * @throws IllegalStateException if this ServletContext has already
      * been initialized
+     *
+     * @throws IllegalArgumentException if <code>filterName</code> is null or
+     * an empty String
      *
      * @throws UnsupportedOperationException if this ServletContext was
      * passed to the {@link ServletContextListener#contextInitialized} method
@@ -1062,6 +1081,9 @@ public interface ServletContext {
      *
      * @throws IllegalStateException if this ServletContext has already
      * been initialized
+     *
+     * @throws IllegalArgumentException if <code>filterName</code> is null or
+     * an empty String
      *
      * @throws UnsupportedOperationException if this ServletContext was
      * passed to the {@link ServletContextListener#contextInitialized} method
@@ -1264,8 +1286,9 @@ public interface ServletContext {
      * <li>{@link ServletContextAttributeListener}</tt>
      * <li>{@link ServletRequestListener}</tt>
      * <li>{@link ServletRequestAttributeListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionListener}</tt>
      * <li>{@link javax.servlet.http.HttpSessionAttributeListener}</tt>
+     * <li>{@link javax.servlet.http.HttpSessionIdListener}</tt>
+     * <li>{@link javax.servlet.http.HttpSessionListener}</tt>
      * </ul>
      *
      * <p>If this ServletContext was passed to 
@@ -1320,8 +1343,9 @@ public interface ServletContext {
      * <li>{@link ServletContextAttributeListener}</tt>
      * <li>{@link ServletRequestListener}</tt>
      * <li>{@link ServletRequestAttributeListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionListener}</tt>
      * <li>{@link javax.servlet.http.HttpSessionAttributeListener}</tt>
+     * <li>{@link javax.servlet.http.HttpSessionIdListener}</tt>
+     * <li>{@link javax.servlet.http.HttpSessionListener}</tt>
      * </ul>
      *
      * <p>If this ServletContext was passed to 
@@ -1367,8 +1391,9 @@ public interface ServletContext {
      * <li>{@link ServletContextAttributeListener}</tt>
      * <li>{@link ServletRequestListener}</tt>
      * <li>{@link ServletRequestAttributeListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionListener}</tt>
      * <li>{@link javax.servlet.http.HttpSessionAttributeListener}</tt>
+     * <li>{@link javax.servlet.http.HttpSessionIdListener}</tt>
+     * <li>{@link javax.servlet.http.HttpSessionListener}</tt>
      * </ul>
      *
      * <p>If this ServletContext was passed to 
@@ -1377,7 +1402,7 @@ public interface ServletContext {
      * {@link ServletContextListener}, in addition to the interfaces listed
      * above.
      *
-     * <p>If the given <tt>listenerClass</tt<> implements a listener
+     * <p>If the given <tt>listenerClass</tt> implements a listener
      * interface whose invocation order corresponds to the declaration order
      * (i.e., if it implements {@link ServletRequestListener},
      * {@link ServletContextListener}, or
@@ -1419,8 +1444,9 @@ public interface ServletContext {
      * <code>{@link ServletContextAttributeListener}</code>,
      * <code>{@link ServletRequestListener}</code>,
      * <code>{@link ServletRequestAttributeListener}</code>,
-     * <code>{@link javax.servlet.http.HttpSessionListener}</code>, or
      * <code>{@link javax.servlet.http.HttpSessionAttributeListener}</code>
+     * <code>{@link javax.servlet.http.HttpSessionIdListener}</code>, or
+     * <code>{@link javax.servlet.http.HttpSessionListener}</code>, or
      * interfaces.
      *
      * <p>The returned EventListener instance may be further customized
@@ -1454,8 +1480,9 @@ public interface ServletContext {
      * <code>{@link ServletContextAttributeListener}</code>,
      * <code>{@link ServletRequestListener}</code>,
      * <code>{@link ServletRequestAttributeListener}</code>,
-     * <code>{@link javax.servlet.http.HttpSessionListener}</code>, or
      * <code>{@link javax.servlet.http.HttpSessionAttributeListener}</code>
+     * <code>{@link javax.servlet.http.HttpSessionIdListener}</code>, or
+     * <code>{@link javax.servlet.http.HttpSessionListener}</code>, or
      * interfaces.
      *
      * @since Servlet 3.0

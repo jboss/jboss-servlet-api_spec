@@ -1,27 +1,31 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License. You can obtain
- * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
- * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * may not use this file except in compliance with the License.  You can
+ * obtain a copy of the License at
+ * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
- * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
- * Sun designates this particular file as subject to the "Classpath" exception
- * as provided by Sun in the GPL Version 2 section of the License file that
- * accompanied this code.  If applicable, add the following below the License
- * Header, with the fields enclosed by brackets [] replaced by your own
- * identifying information: "Portions Copyrighted [year]
- * [name of copyright owner]"
+ * file and include the License file at packager/legal/LICENSE.txt.
+ *
+ * GPL Classpath Exception:
+ * Oracle designates this particular file as subject to the "Classpath"
+ * exception as provided by Oracle in the GPL Version 2 section of the License
+ * file that accompanied this code.
+ *
+ * Modifications:
+ * If applicable, add the following below the License Header, with the fields
+ * enclosed by brackets [] replaced by your own identifying information:
+ * "Portions Copyright [year] [name of copyright owner]"
  *
  * Contributor(s):
- *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -52,8 +56,6 @@
  * limitations under the License.
  */
 
-
-
 package javax.servlet.http;
 
 import java.io.IOException;
@@ -75,51 +77,52 @@ import javax.servlet.ServletResponseWrapper;
 
 public class HttpServletResponseWrapper extends ServletResponseWrapper implements HttpServletResponse {
 
-
     /** 
-    * Constructs a response adaptor wrapping the given response.
-    * @throws java.lang.IllegalArgumentException if the response is null
-    */
+     * Constructs a response adaptor wrapping the given response.
+     * @throws java.lang.IllegalArgumentException if the response is null
+     */
     public HttpServletResponseWrapper(HttpServletResponse response) {
-	    super(response);
+        super(response);
     }
     
     private HttpServletResponse _getHttpServletResponse() {
-	return (HttpServletResponse) super.getResponse();
+        return (HttpServletResponse) super.getResponse();
     }
     
     /**
      * The default behavior of this method is to call addCookie(Cookie cookie)
      * on the wrapped response object.
      */
+    @Override
     public void addCookie(Cookie cookie) {
-	this._getHttpServletResponse().addCookie(cookie);
+        this._getHttpServletResponse().addCookie(cookie);
     }
 
     /**
      * The default behavior of this method is to call containsHeader(String name)
      * on the wrapped response object.
      */
-
- 
+    @Override
     public boolean containsHeader(String name) {
-	return this._getHttpServletResponse().containsHeader(name);
+        return this._getHttpServletResponse().containsHeader(name);
     }
     
     /**
      * The default behavior of this method is to call encodeURL(String url)
      * on the wrapped response object.
      */
+    @Override
     public String encodeURL(String url) {
-	return this._getHttpServletResponse().encodeURL(url);
+        return this._getHttpServletResponse().encodeURL(url);
     }
 
     /**
      * The default behavior of this method is to return encodeRedirectURL(String url)
      * on the wrapped response object.
      */
+    @Override
     public String encodeRedirectURL(String url) {
-	return this._getHttpServletResponse().encodeRedirectURL(url);
+        return this._getHttpServletResponse().encodeRedirectURL(url);
     }
 
     /**
@@ -129,8 +132,9 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
      * @deprecated As of version 2.1, use {@link #encodeURL(String url)}
      * instead
      */
+    @Override
     public String encodeUrl(String url) {
-	return this._getHttpServletResponse().encodeUrl(url);
+        return this._getHttpServletResponse().encodeUrl(url);
     }
     
     /**
@@ -140,90 +144,99 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
      * @deprecated As of version 2.1, use 
      * {@link #encodeRedirectURL(String url)} instead
      */
+    @Override
     public String encodeRedirectUrl(String url) {
-	return this._getHttpServletResponse().encodeRedirectUrl(url);
+        return this._getHttpServletResponse().encodeRedirectUrl(url);
     }
     
     /**
      * The default behavior of this method is to call sendError(int sc, String msg)
      * on the wrapped response object.
      */
+    @Override
     public void sendError(int sc, String msg) throws IOException {
-	this._getHttpServletResponse().sendError(sc, msg);
+        this._getHttpServletResponse().sendError(sc, msg);
     }
 
     /**
      * The default behavior of this method is to call sendError(int sc)
      * on the wrapped response object.
      */
-
-
+    @Override
     public void sendError(int sc) throws IOException {
-	this._getHttpServletResponse().sendError(sc);
+        this._getHttpServletResponse().sendError(sc);
     }
 
     /**
      * The default behavior of this method is to return sendRedirect(String location)
      * on the wrapped response object.
      */
+    @Override
     public void sendRedirect(String location) throws IOException {
-	this._getHttpServletResponse().sendRedirect(location);
+        this._getHttpServletResponse().sendRedirect(location);
     }
     
     /**
      * The default behavior of this method is to call setDateHeader(String name, long date)
      * on the wrapped response object.
      */
+    @Override
     public void setDateHeader(String name, long date) {
-	this._getHttpServletResponse().setDateHeader(name, date);
+        this._getHttpServletResponse().setDateHeader(name, date);
     }
     
     /**
      * The default behavior of this method is to call addDateHeader(String name, long date)
      * on the wrapped response object.
      */
-   public void addDateHeader(String name, long date) {
-	this._getHttpServletResponse().addDateHeader(name, date);
+    @Override
+    public void addDateHeader(String name, long date) {
+        this._getHttpServletResponse().addDateHeader(name, date);
     }
     
     /**
      * The default behavior of this method is to return setHeader(String name, String value)
      * on the wrapped response object.
      */
+    @Override
     public void setHeader(String name, String value) {
-	this._getHttpServletResponse().setHeader(name, value);
+        this._getHttpServletResponse().setHeader(name, value);
     }
     
     /**
      * The default behavior of this method is to return addHeader(String name, String value)
      * on the wrapped response object.
      */
-     public void addHeader(String name, String value) {
-	this._getHttpServletResponse().addHeader(name, value);
+    @Override
+    public void addHeader(String name, String value) {
+        this._getHttpServletResponse().addHeader(name, value);
     }
     
     /**
      * The default behavior of this method is to call setIntHeader(String name, int value)
      * on the wrapped response object.
      */
+    @Override
     public void setIntHeader(String name, int value) {
-	this._getHttpServletResponse().setIntHeader(name, value);
+        this._getHttpServletResponse().setIntHeader(name, value);
     }
     
     /**
      * The default behavior of this method is to call addIntHeader(String name, int value)
      * on the wrapped response object.
      */
+    @Override
     public void addIntHeader(String name, int value) {
-	this._getHttpServletResponse().addIntHeader(name, value);
+        this._getHttpServletResponse().addIntHeader(name, value);
     }
 
     /**
      * The default behavior of this method is to call setStatus(int sc)
      * on the wrapped response object.
      */
+    @Override
     public void setStatus(int sc) {
-	this._getHttpServletResponse().setStatus(sc);
+        this._getHttpServletResponse().setStatus(sc);
     }
     
     /**
@@ -235,10 +248,10 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
      * use {@link #setStatus(int)}, to send an error with a description
      * use {@link #sendError(int, String)}
      */
-     public void setStatus(int sc, String sm) {
-	this._getHttpServletResponse().setStatus(sc, sm);
+    @Override
+    public void setStatus(int sc, String sm) {
+        this._getHttpServletResponse().setStatus(sc, sm);
     }
-
 
     /**
      * The default behaviour of this method is to call
@@ -247,10 +260,10 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
      *
      * @return the current status code of the wrapped response
      */
+    @Override
     public int getStatus() {
-	return _getHttpServletResponse().getStatus();
+        return _getHttpServletResponse().getStatus();
     }
-
 
     /**
      * The default behaviour of this method is to call
@@ -265,10 +278,10 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
      *
      * @since Servlet 3.0
      */
+    @Override
     public String getHeader(String name) {
-	return _getHttpServletResponse().getHeader(name);
+        return _getHttpServletResponse().getHeader(name);
     }
-
 
     /**
      * The default behaviour of this method is to call
@@ -284,11 +297,11 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
      * of the response header with the given name
      *
      * @since Servlet 3.0
-     */			
+     */                        
+    @Override
     public Collection<String> getHeaders(String name) {
-	return _getHttpServletResponse().getHeaders(name);
+        return _getHttpServletResponse().getHeaders(name);
     }
-    
 
     /**
      * The default behaviour of this method is to call
@@ -303,8 +316,8 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
      *
      * @since Servlet 3.0
      */
+    @Override
     public Collection<String> getHeaderNames() {
-	return _getHttpServletResponse().getHeaderNames();
+        return _getHttpServletResponse().getHeaderNames();
     }
-   
 }

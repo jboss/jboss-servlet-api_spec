@@ -1,27 +1,31 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Copyright (c) 2008-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License. You can obtain
- * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
- * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * may not use this file except in compliance with the License.  You can
+ * obtain a copy of the License at
+ * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
- * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
- * Sun designates this particular file as subject to the "Classpath" exception
- * as provided by Sun in the GPL Version 2 section of the License file that
- * accompanied this code.  If applicable, add the following below the License
- * Header, with the fields enclosed by brackets [] replaced by your own
- * identifying information: "Portions Copyrighted [year]
- * [name of copyright owner]"
+ * file and include the License file at packager/legal/LICENSE.txt.
+ *
+ * GPL Classpath Exception:
+ * Oracle designates this particular file as subject to the "Classpath"
+ * exception as provided by Oracle in the GPL Version 2 section of the License
+ * file that accompanied this code.
+ *
+ * Modifications:
+ * If applicable, add the following below the License Header, with the fields
+ * enclosed by brackets [] replaced by your own identifying information:
+ * "Portions Copyright [year] [name of copyright owner]"
  *
  * Contributor(s):
- *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -106,6 +110,10 @@ public interface AsyncContext {
      * {@link ServletRequest#startAsync(ServletRequest, ServletResponse)}.
      *
      * @return the request that was used to initialize this AsyncContext
+     *
+     * @exception IllegalStateException  if {@link #complete} or any of the
+     *                                  {@link #dispatch} methods has been
+     *                                  called in the asynchronous cycle
      */
     public ServletRequest getRequest();
 
@@ -116,6 +124,10 @@ public interface AsyncContext {
      * {@link ServletRequest#startAsync(ServletRequest, ServletResponse)}.
      *
      * @return the response that was used to initialize this AsyncContext
+     *
+     * @exception IllegalStateException  if {@link #complete} or any of the
+     *                                  {@link #dispatch} methods has been
+     *                                  called in the asynchronous cycle
      */
     public ServletResponse getResponse();
 
@@ -161,16 +173,18 @@ public interface AsyncContext {
      * ...
      * ac.dispatch(); // ASYNC dispatch to /url/A
      * 
+     * // REQUEST to /ur/A
      * // FORWARD dispatch to /url/B
-     * getRequestDispatcher("/url/B").forward(request,response);
+     * request.getRequestDispatcher("/url/B").forward(request,response);
      * // Start async operation from within the target of the FORWARD
      * // dispatch
      * ac = request.startAsync();
      * ...
      * ac.dispatch(); // ASYNC dispatch to /url/A
      * 
+     * // REQUEST to /ur/A
      * // FORWARD dispatch to /url/B
-     * getRequestDispatcher("/url/B").forward(request,response);
+     * request.getRequestDispatcher("/url/B").forward(request,response);
      * // Start async operation from within the target of the FORWARD
      * // dispatch
      * ac = request.startAsync(request,response);
@@ -181,6 +195,10 @@ public interface AsyncContext {
      * <p>This method returns immediately after passing the request
      * and response objects to a container managed thread, on which the
      * dispatch operation will be performed.
+     * If this method is called before the container-initiated dispatch
+     * that called <tt>startAsync</tt> has returned to the container, the
+     * dispatch operation will be delayed until after the container-initiated
+     * dispatch has returned to the container.
      *
      * <p>The dispatcher type of the request is set to
      * <tt>DispatcherType.ASYNC</tt>. Unlike
@@ -356,11 +374,17 @@ public interface AsyncContext {
      * {@link ServletRequest#startAsync} methods.
      *
      * <p>The given AsyncListener will receive an {@link AsyncEvent} when
-     * the asynchronous cycle completes successfully, times out, or results
-     * in an error.
+     * the asynchronous cycle completes successfully, times out, results
+     * in an error, or a new asynchronous cycle is being initiated via
+     * one of the {@link ServletRequest#startAsync} methods.
      *
      * <p>AsyncListener instances will be notified in the order in which
      * they were added.
+     *
+     * <p>If {@link ServletRequest#startAsync(ServletRequest, ServletResponse)}
+     * or {@link ServletRequest#startAsync} is called,
+     * the exact same request and response objects are available from the
+     * {@link AsyncEvent} when the {@link AsyncListener} is notified.
      *
      * @param listener the AsyncListener to be registered
      * 
@@ -378,8 +402,9 @@ public interface AsyncContext {
      * {@link ServletRequest#startAsync} methods.
      *
      * <p>The given AsyncListener will receive an {@link AsyncEvent} when
-     * the asynchronous cycle completes successfully, times out, or results
-     * in an error.
+     * the asynchronous cycle completes successfully, times out, results
+     * in an error, or a new asynchronous cycle is being initiated via
+     * one of the {@link ServletRequest#startAsync} methods.
      *
      * <p>AsyncListener instances will be notified in the order in which
      * they were added.
