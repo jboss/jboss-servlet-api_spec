@@ -173,7 +173,7 @@ public interface AsyncContext {
      * ...
      * ac.dispatch(); // ASYNC dispatch to /url/A
      * 
-     * // REQUEST to /ur/A
+     * // REQUEST to /url/A
      * // FORWARD dispatch to /url/B
      * request.getRequestDispatcher("/url/B").forward(request,response);
      * // Start async operation from within the target of the FORWARD
@@ -182,7 +182,7 @@ public interface AsyncContext {
      * ...
      * ac.dispatch(); // ASYNC dispatch to /url/A
      * 
-     * // REQUEST to /ur/A
+     * // REQUEST to /url/A
      * // FORWARD dispatch to /url/B
      * request.getRequestDispatcher("/url/B").forward(request,response);
      * // Start async operation from within the target of the FORWARD
@@ -478,6 +478,8 @@ public interface AsyncContext {
      * <p>If {@link #setTimeout} is not called, then the container's
      * default timeout, which is available via a call to
      * {@link #getTimeout}, will apply.
+     *
+     * <p>The default value is <code>30000</code> ms.
      *
      * @param timeout the timeout in milliseconds
      *

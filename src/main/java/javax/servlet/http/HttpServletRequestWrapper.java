@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -282,6 +282,8 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
     /**
      * The default behavior of this method is to return changeSessionId()
      * on the wrapped request object.
+     *
+     * @since Servlet 3.1
      */
     @Override
     public String changeSessionId() {
@@ -392,7 +394,8 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
      * @since Servlet 3.1
      */
     @Override
-    public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException {
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass)
+            throws IOException, ServletException {
         return this._getHttpServletRequest().upgrade(handlerClass);
     }
 }

@@ -78,9 +78,6 @@ import javax.servlet.ServletResponse;
  * @see		javax.servlet.ServletResponse
  *
  */
-
-
-
 public interface HttpServletResponse extends ServletResponse {
 
     /**
@@ -90,7 +87,6 @@ public interface HttpServletResponse extends ServletResponse {
      * @param cookie the Cookie to return to the client
      *
      */
-
     public void addCookie(Cookie cookie);
 
     /**
@@ -102,11 +98,10 @@ public interface HttpServletResponse extends ServletResponse {
      *			has already been set; 
      * 			<code>false</code> otherwise
      */
-
     public boolean containsHeader(String name);
 
     /**
-     * Encodes the specified URL by including the session ID in it,
+     * Encodes the specified URL by including the session ID,
      * or, if encoding is not needed, returns the URL unchanged.
      * The implementation of this method includes the logic to
      * determine whether the session ID needs to be encoded in the URL.
@@ -118,11 +113,14 @@ public interface HttpServletResponse extends ServletResponse {
      * method.  Otherwise, URL rewriting cannot be used with browsers
      * which do not support cookies.
      *
+     * <p>If the URL is relative, it is always relative to the current
+     * HttpServletRequest.
+     *
      * @param	url	the url to be encoded.
      * @return		the encoded URL if encoding is needed;
      * 			the unchanged URL otherwise.
+     * @exception IllegalArgumentException if the url is not valid
      */
-
     public String encodeURL(String url);
 
     /**
@@ -130,8 +128,10 @@ public interface HttpServletResponse extends ServletResponse {
      * <code>sendRedirect</code> method or, if encoding is not needed,
      * returns the URL unchanged.  The implementation of this method
      * includes the logic to determine whether the session ID
-     * needs to be encoded in the URL.  Because the rules for making
-     * this determination can differ from those used to decide whether to
+     * needs to be encoded in the URL.  For example, if the browser supports
+     * cookies, or session tracking is turned off, URL encoding is
+     * unnecessary.  Because the rules for making this determination can
+     * differ from those used to decide whether to
      * encode a normal link, this method is separated from the
      * <code>encodeURL</code> method.
      * 
@@ -140,14 +140,17 @@ public interface HttpServletResponse extends ServletResponse {
      * rewriting cannot be used with browsers which do not support
      * cookies.
      *
+     * <p>If the URL is relative, it is always relative to the current
+     * HttpServletRequest.
+     *
      * @param	url	the url to be encoded.
      * @return		the encoded URL if encoding is needed;
      * 			the unchanged URL otherwise.
+     * @exception IllegalArgumentException if the url is not valid
      *
      * @see #sendRedirect
      * @see #encodeUrl
      */
-
     public String encodeRedirectURL(String url);
 
     /**
@@ -156,8 +159,8 @@ public interface HttpServletResponse extends ServletResponse {
      * @param	url	the url to be encoded.
      * @return		the encoded URL if encoding is needed; 
      * 			the unchanged URL otherwise.
+     * @exception IllegalArgumentException if the url is not valid
      */
-
     public String encodeUrl(String url);
     
     /**
@@ -167,8 +170,8 @@ public interface HttpServletResponse extends ServletResponse {
      * @param	url	the url to be encoded.
      * @return		the encoded URL if encoding is needed; 
      * 			the unchanged URL otherwise.
+     * @exception IllegalArgumentException if the url is not valid
      */
-
     public String encodeRedirectUrl(String url);
 
     /**
@@ -194,7 +197,6 @@ public interface HttpServletResponse extends ServletResponse {
      * @exception	IOException	If an input or output exception occurs
      * @exception	IllegalStateException	If the response was committed
      */
-   
     public void sendError(int sc, String msg) throws IOException;
 
     /**
@@ -218,7 +220,6 @@ public interface HttpServletResponse extends ServletResponse {
      * @exception	IllegalStateException	If the response was committed
      *						before this method call
      */
-
     public void sendError(int sc) throws IOException;
 
     /**
@@ -248,7 +249,6 @@ public interface HttpServletResponse extends ServletResponse {
      * @exception	IllegalStateException	If the response was committed or
      *              if a partial URL is given and cannot be converted into a valid URL
      */
-
     public void sendRedirect(String location) throws IOException;
     
     /**
@@ -266,7 +266,6 @@ public interface HttpServletResponse extends ServletResponse {
      * @see #containsHeader
      * @see #addDateHeader
      */
-
     public void setDateHeader(String name, long date);
     
     /**
@@ -281,7 +280,6 @@ public interface HttpServletResponse extends ServletResponse {
      * 
      * @see #setDateHeader
      */
-
     public void addDateHeader(String name, long date);
     
     /**
@@ -300,7 +298,6 @@ public interface HttpServletResponse extends ServletResponse {
      * @see #containsHeader
      * @see #addHeader
      */
-
     public void setHeader(String name, String value);
     
     /**
@@ -315,7 +312,6 @@ public interface HttpServletResponse extends ServletResponse {
      *
      * @see #setHeader
      */
-
     public void addHeader(String name, String value);
 
     /**
@@ -331,7 +327,6 @@ public interface HttpServletResponse extends ServletResponse {
      * @see #containsHeader
      * @see #addIntHeader
      */
-
     public void setIntHeader(String name, int value);
 
     /**
@@ -344,11 +339,8 @@ public interface HttpServletResponse extends ServletResponse {
      *
      * @see #setIntHeader
      */
-
     public void addIntHeader(String name, int value);
 
-
-    
     /**
      * Sets the status code for this response. 
      *
@@ -386,7 +378,6 @@ public interface HttpServletResponse extends ServletResponse {
      */
     public void setStatus(int sc, String sm);
 
-
     /**
      * Gets the current status code of this response.
      *
@@ -395,7 +386,6 @@ public interface HttpServletResponse extends ServletResponse {
      * @since Servlet 3.0
      */
     public int getStatus();
-
 
     /**
      * Gets the value of the response header with the given name.
@@ -418,7 +408,6 @@ public interface HttpServletResponse extends ServletResponse {
      */
     public String getHeader(String name); 
 
-
     /**
      * Gets the values of the response header with the given name.
      *
@@ -439,7 +428,6 @@ public interface HttpServletResponse extends ServletResponse {
      */			
     public Collection<String> getHeaders(String name); 
     
-
     /**
      * Gets the names of the headers of this response.
      *
@@ -466,63 +454,53 @@ public interface HttpServletResponse extends ServletResponse {
     /**
      * Status code (100) indicating the client can continue.
      */
-
     public static final int SC_CONTINUE = 100;
 
-    
     /**
      * Status code (101) indicating the server is switching protocols
      * according to Upgrade header.
      */
-
     public static final int SC_SWITCHING_PROTOCOLS = 101;
 
     /**
      * Status code (200) indicating the request succeeded normally.
      */
-
     public static final int SC_OK = 200;
 
     /**
      * Status code (201) indicating the request succeeded and created
      * a new resource on the server.
      */
-
     public static final int SC_CREATED = 201;
 
     /**
      * Status code (202) indicating that a request was accepted for
      * processing, but was not completed.
      */
-
     public static final int SC_ACCEPTED = 202;
 
     /**
      * Status code (203) indicating that the meta information presented
      * by the client did not originate from the server.
      */
-
     public static final int SC_NON_AUTHORITATIVE_INFORMATION = 203;
 
     /**
      * Status code (204) indicating that the request succeeded but that
      * there was no new information to return.
      */
-
     public static final int SC_NO_CONTENT = 204;
 
     /**
      * Status code (205) indicating that the agent <em>SHOULD</em> reset
      * the document view which caused the request to be sent.
      */
-
     public static final int SC_RESET_CONTENT = 205;
 
     /**
      * Status code (206) indicating that the server has fulfilled
      * the partial GET request for the resource.
      */
-
     public static final int SC_PARTIAL_CONTENT = 206;
 
     /**
@@ -530,7 +508,6 @@ public interface HttpServletResponse extends ServletResponse {
      * corresponds to any one of a set of representations, each with
      * its own specific location.
      */
-
     public static final int SC_MULTIPLE_CHOICES = 300;
 
     /**
@@ -538,7 +515,6 @@ public interface HttpServletResponse extends ServletResponse {
      * moved to a new location, and that future references should use a
      * new URI with their requests.
      */
-
     public static final int SC_MOVED_PERMANENTLY = 301;
 
     /**
@@ -549,7 +525,6 @@ public interface HttpServletResponse extends ServletResponse {
      * This definition is being retained for backwards compatibility.
      * SC_FOUND is now the preferred definition.
      */
-
     public static final int SC_MOVED_TEMPORARILY = 302;
 
     /**
@@ -559,21 +534,18 @@ public interface HttpServletResponse extends ServletResponse {
     * Request-URI for future requests.(HTTP/1.1) To represent the
     * status code (302), it is recommended to use this variable.
     */
-
     public static final int SC_FOUND = 302;
 
     /**
      * Status code (303) indicating that the response to the request
      * can be found under a different URI.
      */
-
     public static final int SC_SEE_OTHER = 303;
 
     /**
      * Status code (304) indicating that a conditional GET operation
      * found that the resource was available and not modified.
      */
-
     public static final int SC_NOT_MODIFIED = 304;
 
     /**
@@ -581,7 +553,6 @@ public interface HttpServletResponse extends ServletResponse {
      * <em>MUST</em> be accessed through the proxy given by the
      * <code><em>Location</em></code> field.
      */
-
     public static final int SC_USE_PROXY = 305;
 
      /**
@@ -590,41 +561,35 @@ public interface HttpServletResponse extends ServletResponse {
      * <em>SHOULD</em> be given by the <code><em>Location</em></code> 
      * field in the response.
      */
-
-     public static final int SC_TEMPORARY_REDIRECT = 307;
+    public static final int SC_TEMPORARY_REDIRECT = 307;
 
     /**
      * Status code (400) indicating the request sent by the client was
      * syntactically incorrect.
      */
-
     public static final int SC_BAD_REQUEST = 400;
 
     /**
      * Status code (401) indicating that the request requires HTTP
      * authentication.
      */
-
     public static final int SC_UNAUTHORIZED = 401;
 
     /**
      * Status code (402) reserved for future use.
      */
-
     public static final int SC_PAYMENT_REQUIRED = 402;
 
     /**
      * Status code (403) indicating the server understood the request
      * but refused to fulfill it.
      */
-
     public static final int SC_FORBIDDEN = 403;
 
     /**
      * Status code (404) indicating that the requested resource is not
      * available.
      */
-
     public static final int SC_NOT_FOUND = 404;
 
     /**
@@ -632,7 +597,6 @@ public interface HttpServletResponse extends ServletResponse {
      * <code><em>Request-Line</em></code> is not allowed for the resource
      * identified by the <code><em>Request-URI</em></code>.
      */
-
     public static final int SC_METHOD_NOT_ALLOWED = 405;
 
     /**
@@ -641,21 +605,18 @@ public interface HttpServletResponse extends ServletResponse {
      * content characteristics not acceptable according to the accept
      * headers sent in the request.
      */
-
     public static final int SC_NOT_ACCEPTABLE = 406;
 
     /**
      * Status code (407) indicating that the client <em>MUST</em> first
      * authenticate itself with the proxy.
      */
-
     public static final int SC_PROXY_AUTHENTICATION_REQUIRED = 407;
 
     /**
      * Status code (408) indicating that the client did not produce a
      * request within the time that the server was prepared to wait.
      */
-
     public static final int SC_REQUEST_TIMEOUT = 408;
 
     /**
@@ -663,7 +624,6 @@ public interface HttpServletResponse extends ServletResponse {
      * completed due to a conflict with the current state of the
      * resource.
      */
-
     public static final int SC_CONFLICT = 409;
 
     /**
@@ -671,14 +631,12 @@ public interface HttpServletResponse extends ServletResponse {
      * available at the server and no forwarding address is known.
      * This condition <em>SHOULD</em> be considered permanent.
      */
-
     public static final int SC_GONE = 410;
 
     /**
      * Status code (411) indicating that the request cannot be handled
      * without a defined <code><em>Content-Length</em></code>.
      */
-
     public static final int SC_LENGTH_REQUIRED = 411;
 
     /**
@@ -686,7 +644,6 @@ public interface HttpServletResponse extends ServletResponse {
      * or more of the request-header fields evaluated to false when it
      * was tested on the server.
      */
-
     public static final int SC_PRECONDITION_FAILED = 412;
 
     /**
@@ -694,7 +651,6 @@ public interface HttpServletResponse extends ServletResponse {
      * the request because the request entity is larger than the server is
      * willing or able to process.
      */
-
     public static final int SC_REQUEST_ENTITY_TOO_LARGE = 413;
 
     /**
@@ -702,7 +658,6 @@ public interface HttpServletResponse extends ServletResponse {
      * the request because the <code><em>Request-URI</em></code> is longer
      * than the server is willing to interpret.
      */
-
     public static final int SC_REQUEST_URI_TOO_LONG = 414;
 
     /**
@@ -710,35 +665,30 @@ public interface HttpServletResponse extends ServletResponse {
      * the request because the entity of the request is in a format not
      * supported by the requested resource for the requested method.
      */
-
     public static final int SC_UNSUPPORTED_MEDIA_TYPE = 415;
 
     /**
      * Status code (416) indicating that the server cannot serve the
      * requested byte range.
      */
-
     public static final int SC_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
 
     /**
      * Status code (417) indicating that the server could not meet the
      * expectation given in the Expect request header.
      */
-
     public static final int SC_EXPECTATION_FAILED = 417;
 
     /**
      * Status code (500) indicating an error inside the HTTP server
      * which prevented it from fulfilling the request.
      */
-
     public static final int SC_INTERNAL_SERVER_ERROR = 500;
 
     /**
      * Status code (501) indicating the HTTP server does not support
      * the functionality needed to fulfill the request.
      */
-
     public static final int SC_NOT_IMPLEMENTED = 501;
 
     /**
@@ -746,14 +696,12 @@ public interface HttpServletResponse extends ServletResponse {
      * invalid response from a server it consulted when acting as a
      * proxy or gateway.
      */
-
     public static final int SC_BAD_GATEWAY = 502;
 
     /**
      * Status code (503) indicating that the HTTP server is
      * temporarily overloaded, and unable to handle the request.
      */
-
     public static final int SC_SERVICE_UNAVAILABLE = 503;
 
     /**
@@ -761,7 +709,6 @@ public interface HttpServletResponse extends ServletResponse {
      * a timely response from the upstream server while acting as
      * a gateway or proxy.
      */
-
     public static final int SC_GATEWAY_TIMEOUT = 504;
 
     /**
@@ -769,6 +716,5 @@ public interface HttpServletResponse extends ServletResponse {
      * or refuses to support the HTTP protocol version that was used
      * in the request message.
      */
-
     public static final int SC_HTTP_VERSION_NOT_SUPPORTED = 505;
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -730,16 +730,19 @@ public interface HttpServletRequest extends ServletRequest {
      * Create an instance of <code>HttpUpgradeHandler</code> for an given
      * class and uses it for the http protocol upgrade processing.
      *
-     * @param handlerClass The <code>ProtocolHandler</code> class used for the upgrade.
+     * @param handlerClass The <code>HttpUpgradeHandler</code> class used for the upgrade.
      *
      * @return an instance of the <code>HttpUpgradeHandler</code>
      *
      * @exception IOException if an I/O error occurred during the upgrade
+     * @exception ServletException if the given <code>handlerClass</code> fails to
+     * be instantiated
      *
      * @see javax.servlet.http.HttpUpgradeHandler
      * @see javax.servlet.http.WebConnection
      *
      * @since Servlet 3.1
      */
-    public <T extends HttpUpgradeHandler> T  upgrade(Class<T> handlerClass) throws IOException;
+    public <T extends HttpUpgradeHandler> T  upgrade(Class<T> handlerClass)
+        throws IOException, ServletException;
 }
