@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2008-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -36,45 +36,54 @@
  * and therefore, elected the GPL Version 2 license, then the option applies
  * only if the new code is made subject to such option by the copyright
  * holder.
+ *
  */
 
-package javax.servlet.annotation;
+package javax.servlet.http;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.Documented;
+import java.util.Set;
+import java.util.Collections;
 
-/**
- * This annotation is used on a Servlet or Filter implementation class
- * to specify an initialization parameter.
- * 
- * @since Servlet 3.0
- */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface WebInitParam {
 
-    /**
-     * Name of the initialization parameter
-     *
-     * @return name of the initialization parameter
-     */
-    String name();
-    
-    /**
-     * Value of the initialization parameter
-     *
-     * @return value of the initialization parameter
-     */    
-    String value();
-    
-    /**
-     * Description of the initialization parameter
-     *
-     * @return description of the initialization parameter
-     */
-    String description() default "";
+class NoOpPushBuilder implements PushBuilder {
+    @Override
+        public PushBuilder method(String method) { return this; }
+    @Override
+        public PushBuilder queryString(String queryString) { return this; }
+    @Override
+        public PushBuilder sessionId(String sessionId) { return this; }
+    @Override
+        public PushBuilder conditional(boolean conditional) { return this; }
+    @Override
+        public PushBuilder setHeader(String name, String value) { return this; }
+    @Override
+        public PushBuilder addHeader(String name, String value) { return this; }
+    @Override
+        public PushBuilder removeHeader(String name) { return this; }
+    @Override
+        public PushBuilder path(String path) { return this; }
+    @Override
+        public PushBuilder etag(String etag) { return this; }
+    @Override
+        public PushBuilder lastModified(String lastModified) { return this; }
+    @Override
+        public void push() {}
+    @Override
+        public String getMethod() { return ""; }
+    @Override
+        public String getQueryString() { return ""; }
+    @Override
+        public String getSessionId() { return ""; }
+    @Override
+        public boolean isConditional() { return false; }
+    @Override
+        public Set<String> getHeaderNames() { return Collections.emptySet(); }
+    @Override
+        public String getHeader(String name) { return ""; }
+    @Override
+        public String getPath() { return ""; }
+    @Override
+        public String getEtag() { return ""; }
+    @Override
+        public String getLastModified() { return ""; }
 }

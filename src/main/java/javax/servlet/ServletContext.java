@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -70,8 +70,8 @@ import javax.servlet.descriptor.JspConfigDescriptor;
 
 /**
  * Defines a set of methods that a servlet uses to communicate with its
- * servlet container, for example, to get the MIME type of a file, dispatch
- * requests, or write to a log file.
+ * servlet container, for example, to get the MIME type of a file,
+ * dispatch requests, or write to a log file.
  *
  * <p>There is one context per "web application" per Java Virtual Machine.  (A
  * "web application" is a collection of servlets and content installed under a
@@ -123,10 +123,10 @@ public interface ServletContext {
      *
      * <p>The context path is the portion of the request URI that is used
      * to select the context of the request. The context path always comes
-     * first in a request URI. If this context is the “default” context
-     * rooted at the base of the Web server’s URL name space, this path
+     * first in a request URI. If this context is the "default" context
+     * rooted at the base of the Web server's URL name space, this path
      * will be an empty string. Otherwise, if the context is not rooted at
-     * the root of the server’s name space, the path starts with a /
+     * the root of the server's name space, the path starts with a /
      * character but does not end with a / character.
      *
      * <p>It is possible that a servlet container may match a context by
@@ -176,9 +176,9 @@ public interface ServletContext {
     /**
      * Returns the major version of the Servlet API that this
      * servlet container supports. All implementations that comply
-     * with Version 3.0 must have this method return the integer 3.
+     * with Version 4.0 must have this method return the integer 4.
      *
-     * @return 3
+     * @return 4
      */
     public int getMajorVersion();
     
@@ -186,7 +186,7 @@ public interface ServletContext {
     /**
      * Returns the minor version of the Servlet API that this
      * servlet container supports. All implementations that comply
-     * with Version 3.0 must have this method return the integer 0.
+     * with Version 4.0 must have this method return the integer 0.
      *
      * @return 0
      */
@@ -224,7 +224,7 @@ public interface ServletContext {
      * supported by the Servlet container.
      *
      * @return the minor version of the Servlet specification that the
-     * application xrepresented by this ServletContext is based on
+     * application represented by this ServletContext is based on
      *
      * @throws UnsupportedOperationException if this ServletContext was
      * passed to the {@link ServletContextListener#contextInitialized} method
@@ -265,7 +265,7 @@ public interface ServletContext {
      *
      * <p>For example, for a web application containing:
      *
-     * <code><pre>
+     * <pre>{@code
      *   /welcome.html
      *   /catalog/index.html
      *   /catalog/products.html
@@ -275,7 +275,7 @@ public interface ServletContext {
      *   /WEB-INF/web.xml
      *   /WEB-INF/classes/com.acme.OrderServlet.class
      *   /WEB-INF/lib/catalog.jar!/META-INF/resources/catalog/moreOffers/books.html
-     * </pre></code>
+     * }</pre>
      * 
      * <tt>getResourcePaths("/")</tt> would return
      * <tt>{"/welcome.html", "/catalog/", "/customer/", "/WEB-INF/"}</tt>,
@@ -452,7 +452,13 @@ public interface ServletContext {
      * <p>In lieu of this method, servlets can share information using the 
      * <code>ServletContext</code> class and can perform shared business logic
      * by invoking methods on common non-servlet classes.
+     *
+     * @param name the servlet name
+     * @return the {@code javax.servlet.Servlet Servlet} with the given name
+     * @throws ServletException if an exception has occurred that interfaces
+     *                          with servlet's normal operation
      */
+    @Deprecated
     public Servlet getServlet(String name) throws ServletException;
     
 
@@ -466,7 +472,10 @@ public interface ServletContext {
      * remains only to preserve binary compatibility. This method
      * will be permanently removed in a future version of the Java
      * Servlet API.
+     *
+     * @return an <code>Enumeration</code> of {@code javax.servlet.Servlet Servlet}
      */
+    @Deprecated
     public Enumeration<Servlet> getServlets();
     
 
@@ -479,7 +488,10 @@ public interface ServletContext {
      * this method always returns an empty <code>Enumeration</code> and 
      * remains only to preserve binary compatibility. This method will 
      * be permanently removed in a future version of the Java Servlet API.
+     *
+     * @return an <code>Enumeration</code> of {@code javax.servlet.Servlet Servlet} names
      */
+    @Deprecated
     public Enumeration<String> getServletNames();
     
 
@@ -503,7 +515,11 @@ public interface ServletContext {
      * <p>This method was originally defined to write an 
      * exception's stack trace and an explanatory error message
      * to the servlet log file.
+     *
+     * @param exception the <code>Exception</code> error
+     * @param msg a <code>String</code> that describes the exception
      */
+    @Deprecated
     public void log(Exception exception, String msg);
     
 
@@ -579,8 +595,8 @@ public interface ServletContext {
 
     /**
      * Returns a <code>String</code> containing the value of the named
-     * context-wide initialization parameter, or <code>null</code> if the 
-     * parameter does not exist.
+     * context-wide initialization parameter, or <code>null</code> if
+     * the parameter does not exist.
      *
      * <p>This method can make available configuration information useful
      * to an entire web application.  For example, it can provide a 
@@ -590,8 +606,12 @@ public interface ServletContext {
      * @param	name	a <code>String</code> containing the name of the
      *                  parameter whose value is requested
      * 
-     * @return 		a <code>String</code> containing at least the 
-     *			servlet container name and version number
+     * @return a <code>String</code> containing the value of the
+     * context's initialization parameter, or <code>null</code> if the
+     * context's initialization parameter does not exist.
+     *
+     * @throws NullPointerException if the argument {@code name} is
+     * {@code null}
      *
      * @see ServletConfig#getInitParameter
      */
@@ -628,6 +648,8 @@ public interface ServletContext {
      * @throws IllegalStateException if this ServletContext has already
      * been initialized
      *
+     * @throws NullPointerException if the name parameter is {@code null}
+     *
      * @throws UnsupportedOperationException if this ServletContext was
      * passed to the {@link ServletContextListener#contextInitialized} method
      * of a {@link ServletContextListener} that was neither declared in
@@ -640,8 +662,8 @@ public interface ServletContext {
 
 
     /**
-     * Returns the servlet container attribute with the given name, 
-     * or <code>null</code> if there is no attribute by that name.
+     * Returns the servlet container attribute with the given name, or
+     * <code>null</code> if there is no attribute by that name.
      *
      * <p>An attribute allows a servlet container to give the
      * servlet additional information not
@@ -661,12 +683,15 @@ public interface ServletContext {
      * @param name 	a <code>String</code> specifying the name 
      *			of the attribute
      *
-     * @return 		an <code>Object</code> containing the value 
-     *			of the attribute, or <code>null</code>
-     *			if no attribute exists matching the given
-     *			name
+     * @return an <code>Object</code> containing the value of the
+     *			attribute, or <code>null</code> if no attribute
+     *			exists matching the given name.
      *
      * @see 		ServletContext#getAttributeNames
+     *
+     * @throws NullPointerException if the argument {@code name} is
+     * {@code null}
+     *
      */
     public Object getAttribute(String name);
     
@@ -706,6 +731,9 @@ public interface ServletContext {
      *
      * @param object 	an <code>Object</code> representing the
      *			attribute to be bound
+     *
+     * @throws NullPointerException if the name parameter is {@code null}
+     *
      */
     public void setAttribute(String name, Object object);
     
@@ -901,6 +929,7 @@ public interface ServletContext {
      * See the Java EE platform and JSR 299 specifications for additional
      * details about Managed Beans and resource injection.
      *
+     * @param <T> the class of the Servlet to create
      * @param clazz the Servlet class to instantiate
      *
      * @return the new Servlet instance
@@ -933,6 +962,7 @@ public interface ServletContext {
      * <code>web.xml</code> or <code>web-fragment.xml</code>, nor annotated
      * with {@link javax.servlet.annotation.WebListener}
      *
+     * @param servletName the name of a servlet
      * @since Servlet 3.0
      */
     public ServletRegistration getServletRegistration(String servletName);
@@ -1112,6 +1142,7 @@ public interface ServletContext {
      * See the Java EE platform and JSR 299 specifications for additional
      * details about Managed Beans and resource injection.
      *
+     * @param <T> the class of the Filter to create
      * @param clazz the Filter class to instantiate
      *
      * @return the new Filter instance
@@ -1135,6 +1166,7 @@ public interface ServletContext {
      * Gets the FilterRegistration corresponding to the filter with the
      * given <tt>filterName</tt>.
      *
+     * @param filterName the name of a filter
      * @return the (complete or preliminary) FilterRegistration for the
      * filter with the given <tt>filterName</tt>, or null if no
      * FilterRegistration exists under that name
@@ -1283,12 +1315,12 @@ public interface ServletContext {
      * ServletContext, and must implement one or more of the following
      * interfaces:
      * <ul>
-     * <li>{@link ServletContextAttributeListener}</tt>
-     * <li>{@link ServletRequestListener}</tt>
-     * <li>{@link ServletRequestAttributeListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionAttributeListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionIdListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionListener}</tt>
+     * <li>{@link ServletContextAttributeListener}
+     * <li>{@link ServletRequestListener}
+     * <li>{@link ServletRequestAttributeListener}
+     * <li>{@link javax.servlet.http.HttpSessionAttributeListener}
+     * <li>{@link javax.servlet.http.HttpSessionIdListener}
+     * <li>{@link javax.servlet.http.HttpSessionListener}
      * </ul>
      *
      * <p>If this ServletContext was passed to 
@@ -1340,12 +1372,12 @@ public interface ServletContext {
      * <p>The given listener must be an instance of one or more of the
      * following interfaces:
      * <ul>
-     * <li>{@link ServletContextAttributeListener}</tt>
-     * <li>{@link ServletRequestListener}</tt>
-     * <li>{@link ServletRequestAttributeListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionAttributeListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionIdListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionListener}</tt>
+     * <li>{@link ServletContextAttributeListener}
+     * <li>{@link ServletRequestListener}
+     * <li>{@link ServletRequestAttributeListener}
+     * <li>{@link javax.servlet.http.HttpSessionAttributeListener}
+     * <li>{@link javax.servlet.http.HttpSessionIdListener}
+     * <li>{@link javax.servlet.http.HttpSessionListener}
      * </ul>
      *
      * <p>If this ServletContext was passed to 
@@ -1361,6 +1393,7 @@ public interface ServletContext {
      * then the listener will be added to the end of the ordered list of
      * listeners of that interface.
      *
+     * @param <T> the class of the EventListener to add
      * @param t the listener to be added
      *
      * @throws IllegalArgumentException if the given listener is not
@@ -1388,12 +1421,12 @@ public interface ServletContext {
      * <p>The given <tt>listenerClass</tt> must implement one or more of the
      * following interfaces:
      * <ul>
-     * <li>{@link ServletContextAttributeListener}</tt>
-     * <li>{@link ServletRequestListener}</tt>
-     * <li>{@link ServletRequestAttributeListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionAttributeListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionIdListener}</tt>
-     * <li>{@link javax.servlet.http.HttpSessionListener}</tt>
+     * <li>{@link ServletContextAttributeListener}
+     * <li>{@link ServletRequestListener}
+     * <li>{@link ServletRequestAttributeListener}
+     * <li>{@link javax.servlet.http.HttpSessionAttributeListener}
+     * <li>{@link javax.servlet.http.HttpSessionIdListener}
+     * <li>{@link javax.servlet.http.HttpSessionListener}
      * </ul>
      *
      * <p>If this ServletContext was passed to 
@@ -1440,13 +1473,13 @@ public interface ServletContext {
      * Instantiates the given EventListener class.
      *
      * <p>The specified EventListener class must implement at least one of
-     * the <code>{@link ServletContextListener}</code>,
-     * <code>{@link ServletContextAttributeListener}</code>,
-     * <code>{@link ServletRequestListener}</code>,
-     * <code>{@link ServletRequestAttributeListener}</code>,
-     * <code>{@link javax.servlet.http.HttpSessionAttributeListener}</code>
-     * <code>{@link javax.servlet.http.HttpSessionIdListener}</code>, or
-     * <code>{@link javax.servlet.http.HttpSessionListener}</code>, or
+     * the {@link ServletContextListener},
+     * {@link ServletContextAttributeListener},
+     * {@link ServletRequestListener},
+     * {@link ServletRequestAttributeListener},
+     * {@link javax.servlet.http.HttpSessionAttributeListener},
+     * {@link javax.servlet.http.HttpSessionIdListener}, or
+     * {@link javax.servlet.http.HttpSessionListener}
      * interfaces.
      *
      * <p>The returned EventListener instance may be further customized
@@ -1461,6 +1494,7 @@ public interface ServletContext {
      * See the Java EE platform and JSR 299 specifications for additional
      * details about Managed Beans and resource injection.
      *
+     * @param <T> the class of the EventListener to create
      * @param clazz the EventListener class to instantiate
      *
      * @return the new EventListener instance
@@ -1476,13 +1510,13 @@ public interface ServletContext {
      *
      * @throws IllegalArgumentException if the specified EventListener class
      * does not implement any of the
-     * <code>{@link ServletContextListener}</code>,
-     * <code>{@link ServletContextAttributeListener}</code>,
-     * <code>{@link ServletRequestListener}</code>,
-     * <code>{@link ServletRequestAttributeListener}</code>,
-     * <code>{@link javax.servlet.http.HttpSessionAttributeListener}</code>
-     * <code>{@link javax.servlet.http.HttpSessionIdListener}</code>, or
-     * <code>{@link javax.servlet.http.HttpSessionListener}</code>, or
+     * {@link ServletContextListener},
+     * {@link ServletContextAttributeListener},
+     * {@link ServletRequestListener},
+     * {@link ServletRequestAttributeListener},
+     * {@link javax.servlet.http.HttpSessionAttributeListener},
+     * {@link javax.servlet.http.HttpSessionIdListener}, or
+     * {@link javax.servlet.http.HttpSessionListener}
      * interfaces.
      *
      * @since Servlet 3.0

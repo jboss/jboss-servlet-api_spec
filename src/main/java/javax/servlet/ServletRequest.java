@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -457,6 +457,11 @@ public interface ServletRequest {
     public RequestDispatcher getRequestDispatcher(String path);
     
     /**
+     * @param path the path for which the real path is to be returned.
+
+     * @return the <i>real</i> path, or <tt>null</tt> if the
+     * translation cannot be performed.
+
      * @deprecated  As of Version 2.1 of the Java Servlet API,
      *    use {@link ServletContext#getRealPath} instead.
      */

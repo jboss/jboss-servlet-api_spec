@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,7 +58,8 @@ public interface WriteListener extends EventListener {
      * this method will be invoked by the container the first time when it is possible
      * to write data. Subsequently the container will invoke this method if and only
      * if {@link javax.servlet.ServletOutputStream#isReady()} method
-     * has been called and has returned <code>false</code>.
+     * has been called and has returned a value of <code>false</code> and a write
+     * operation has subsequently become possible.
      *
      * @throws IOException if an I/O related error has occurred during processing
      */
@@ -66,6 +67,8 @@ public interface WriteListener extends EventListener {
 
     /**
      * Invoked when an error occurs writing data using the non-blocking APIs.
+     *
+     * @param t the throwable to indicate why the write operation failed
      */
     public void onError(final Throwable t);
 

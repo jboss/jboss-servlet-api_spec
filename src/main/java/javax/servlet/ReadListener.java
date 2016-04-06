@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -59,7 +59,8 @@ public interface ReadListener extends EventListener {
      * this method will be invoked by the container the first time when it is possible
      * to read data. Subsequently the container will invoke this method if and only
      * if {@link javax.servlet.ServletInputStream#isReady()} method
-     * has been called and has returned <code>false</code>.
+     * has been called and returned a value of <code>false</code> and data has subsequently
+     * become available to read.
      *
      * @throws IOException if an I/O related error has occurred during processing
      */
@@ -75,6 +76,8 @@ public interface ReadListener extends EventListener {
 
     /**
      * Invoked when an error occurs processing the request.
+     *
+     * @param t the throwable to indicate why the read operation failed
      */
     public void onError(Throwable t);
 

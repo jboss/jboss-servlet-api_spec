@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,15 +58,16 @@
 
 package javax.servlet.http;
 
-import java.io.IOException;
-import java.util.*;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Enumeration;
 
 /**
  *
- * Extends the {@link javax.servlet.ServletRequest} interface
- * to provide request information for HTTP servlets. 
+ * Extends the {@link javax.servlet.ServletRequest} interface to provide
+ * request information for HTTP servlets.
  *
  * <p>The servlet container creates an <code>HttpServletRequest</code> 
  * object and passes it as an argument to the servlet's service
@@ -305,6 +306,22 @@ public interface HttpServletRequest extends ServletRequest {
     public String getPathTranslated();
 
     /**
+     * Returns a {@link PushBuilder} for issuing server push responses
+     * from the current request.  If the current connection does not
+     * support server push, or server push has been disabled by the
+     * client via a {@code SETTINGS_ENABLE_PUSH} settings frame value of
+     * {@code 0} (zero), a valid {@code PushBuilder} must still be
+     * returned, but calling any of the methods on it will have no
+     * effect.
+     *
+     * @return a {@link PushBuilder} for issuing server push responses
+     * from the current request.
+     */
+     default public PushBuilder getPushBuilder() {
+         return new NoOpPushBuilder();
+     }
+     
+    /**
      * Returns the portion of the request URI that indicates the context
      * of the request. The context path always comes first in a request
      * URI. The path starts with a "/" character but does not end with a "/"
@@ -362,12 +379,12 @@ public interface HttpServletRequest extends ServletRequest {
      * defined using deployment descriptors.  If the user has not been
      * authenticated, the method returns <code>false</code>.
      *
-     * <p>The role name “*” should never be used as an argument in calling
+     * <p>The role name "*" should never be used as an argument in calling
      * <code>isUserInRole</code>. Any call to <code>isUserInRole</code> with
-     * “*” must return false.
-     * If the role-name of the security-role to be tested is “**”, and
+     * "*" must return false.
+     * If the role-name of the security-role to be tested is "**", and
      * the application has NOT declared an application security-role with
-     * role-name “**”, <code>isUserInRole</code> must only return true if
+     * role-name "**", <code>isUserInRole</code> must only return true if
      * the user has been authenticated; that is, only when
      * {@link #getRemoteUser} and {@link #getUserPrincipal} would both return
      * a non-null value. Otherwise, the container must check
@@ -578,7 +595,12 @@ public interface HttpServletRequest extends ServletRequest {
      * @deprecated		As of Version 2.1 of the Java Servlet
      *				API, use {@link #isRequestedSessionIdFromURL}
      *				instead.
+     * 
+     * @return			<code>true</code> if the session ID
+     *				came in as part of a URL; otherwise,
+     *				<code>false</code>
      */
+    @Deprecated
     public boolean isRequestedSessionIdFromUrl();
 
     /**
@@ -727,9 +749,12 @@ public interface HttpServletRequest extends ServletRequest {
     public Part getPart(String name) throws IOException, ServletException;
 
     /**
-     * Create an instance of <code>HttpUpgradeHandler</code> for an given
+     * Creates an instance of <code>HttpUpgradeHandler</code> for a given
      * class and uses it for the http protocol upgrade processing.
      *
+     * @param <T> The {@code Class}, which extends {@link
+     * HttpUpgradeHandler}, of the {@code handlerClass}.
+
      * @param handlerClass The <code>HttpUpgradeHandler</code> class used for the upgrade.
      *
      * @return an instance of the <code>HttpUpgradeHandler</code>
@@ -745,4 +770,24 @@ public interface HttpServletRequest extends ServletRequest {
      */
     public <T extends HttpUpgradeHandler> T  upgrade(Class<T> handlerClass)
         throws IOException, ServletException;
+
+    default Mapping getMapping() {
+        return new Mapping() {
+            @Override
+            public String getMatchValue() {
+                return "";
+            }
+
+            @Override
+            public String getPattern() {
+                return "";
+            }
+
+            @Override
+            public MappingMatch getMatchType() {
+                return MappingMatch.UNKNOWN;
+            }
+
+        };
+    }
 }
