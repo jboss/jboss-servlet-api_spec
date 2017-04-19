@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -91,6 +91,9 @@ public interface ServletRequestListener extends EventListener {
      *
      * @param sre the ServletRequestEvent containing the ServletRequest
      * and the ServletContext representing the web application
+     *
+     * @implSpec
+     * The default implementation takes no action.
      */
     default public void requestDestroyed(ServletRequestEvent sre) {}
 
@@ -100,6 +103,9 @@ public interface ServletRequestListener extends EventListener {
      *
      * @param sre the ServletRequestEvent containing the ServletRequest
      * and the ServletContext representing the web application
+     *
+     * @implSpec
+     * The default implementation takes no action.
      */
     default public void requestInitialized(ServletRequestEvent sre) {}
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2008-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -81,6 +81,13 @@ public interface AsyncContext {
      * {@link #dispatch(String)} or {@link #dispatch(ServletContext,String)} 
      */
     static final String ASYNC_CONTEXT_PATH = "javax.servlet.async.context_path";
+
+    /**
+     * The name of the request attribute under which the original
+     * {@link javax.servlet.http.ServletMapping} is made available to the target of a
+     * {@link #dispatch(String)} or {@link #dispatch(ServletContext,String)} 
+     */
+    static final String ASYNC_MAPPING = "javax.servlet.async.mapping";
 
     /**
      * The name of the request attribute under which the original

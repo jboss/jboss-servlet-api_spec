@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -60,6 +60,8 @@ package javax.servlet.http;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.Supplier;
 import javax.servlet.ServletResponseWrapper;
 
 /**
@@ -324,5 +326,17 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
     @Override
     public Collection<String> getHeaderNames() {
         return _getHttpServletResponse().getHeaderNames();
+    }
+
+    /**
+     * The default behaviour of this method is to call
+     * {@link HttpServletResponse#setTrailers} on the wrapped response
+     * object.
+     *
+     * @since Servlet 4.0
+     */
+    @Override
+    public void setTrailers(Supplier<Map<String, String>> supplier) {
+        _getHttpServletResponse().setTrailers(supplier);
     }
 }

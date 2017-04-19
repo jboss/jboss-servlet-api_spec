@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -92,6 +92,9 @@ public interface ServletRequestAttributeListener extends EventListener {
      * @param srae the ServletRequestAttributeEvent containing the 
      * ServletRequest and the name and value of the attribute that was
      * added
+     *
+     * @implSpec
+     * The default implementation takes no action.
      */
     default public void attributeAdded(ServletRequestAttributeEvent srae) {}
 
@@ -102,6 +105,9 @@ public interface ServletRequestAttributeListener extends EventListener {
      * @param srae the ServletRequestAttributeEvent containing the 
      * ServletRequest and the name and value of the attribute that was
      * removed
+     *
+     * @implSpec
+     * The default implementation takes no action.
      */
     default public void attributeRemoved(ServletRequestAttributeEvent srae) {}
 
@@ -112,6 +118,9 @@ public interface ServletRequestAttributeListener extends EventListener {
      * @param srae the ServletRequestAttributeEvent containing the 
      * ServletRequest and the name and (old) value of the attribute
      * that was replaced
+     *
+     * @implSpec
+     * The default implementation takes no action.
      */
     default public void attributeReplaced(ServletRequestAttributeEvent srae) {}
 }

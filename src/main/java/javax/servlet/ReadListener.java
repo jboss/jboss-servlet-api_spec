@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2016 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,9 +58,9 @@ public interface ReadListener extends EventListener {
      * When an instance of the <code>ReadListener</code> is registered with a {@link ServletInputStream},
      * this method will be invoked by the container the first time when it is possible
      * to read data. Subsequently the container will invoke this method if and only
-     * if {@link javax.servlet.ServletInputStream#isReady()} method
-     * has been called and returned a value of <code>false</code> and data has subsequently
-     * become available to read.
+     * if the {@link javax.servlet.ServletInputStream#isReady()} method
+     * has been called and has returned a value of <code>false</code> <em>and</em>
+     * data has subsequently become available to read.
      *
      * @throws IOException if an I/O related error has occurred during processing
      */

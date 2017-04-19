@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -154,7 +154,16 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
      public int getIntHeader(String name) {
         return this._getHttpServletRequest().getIntHeader(name);
     }
-    
+
+    /**
+     * <p>The default behavior of this method is to
+     * return getServletMapping() on the wrapped request object.</p>
+     */
+     @Override
+     public ServletMapping getServletMapping() {
+        return this._getHttpServletRequest().getServletMapping();
+    }
+
     /**
      * The default behavior of this method is to return getMethod()
      * on the wrapped request object.
@@ -403,5 +412,27 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass)
             throws IOException, ServletException {
         return this._getHttpServletRequest().upgrade(handlerClass);
+    }
+
+    /**
+     * The default behavior of this method is to call newPushBuilder on the
+     * wrapped request object.
+     *
+     * @since Servlet 4.0
+     */
+    @Override
+    public PushBuilder newPushBuilder() {
+        return this._getHttpServletRequest().newPushBuilder();
+    }
+
+    /**
+     * The default behavior of this method is to call getTrailers on the
+     * wrapped request object.
+     *
+     * @since Servlet 4.0
+     */
+    @Override
+    public Map<String, String> getTrailers() {
+        return this._getHttpServletRequest().getTrailers();
     }
 }

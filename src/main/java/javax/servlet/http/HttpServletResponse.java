@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -60,6 +60,8 @@ package javax.servlet.http;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.Supplier;
 import javax.servlet.ServletResponse;
 
 /**
@@ -177,17 +179,22 @@ public interface HttpServletResponse extends ServletResponse {
     public String encodeRedirectUrl(String url);
 
     /**
-     * Sends an error response to the client using the specified
-     * status and clears the buffer.  The server defaults to creating the
-     * response to look like an HTML-formatted server error page
-     * containing the specified message, setting the content type
-     * to "text/html". The server will preserve cookies and may clear or
-     * update any headers needed to serve the error page as a valid response.
+     * <p>Sends an error response to the client using the specified
+     * status and clears the buffer.  The server defaults to creating
+     * the response to look like an HTML-formatted server error page
+     * containing the specified message, setting the content type to
+     * "text/html".  The caller is <strong>not</strong> responsible for
+     * escaping or re-encoding the message to ensure it is safe with
+     * respect to the current response encoding and content type.  This
+     * aspect of safety is the responsibility of the container, as it is
+     * generating the error page containing the message.  The server
+     * will preserve cookies and may clear or update any headers needed
+     * to serve the error page as a valid response.</p>
      *
-     * If an error-page declaration has been made for the web application
-     * corresponding to the status code passed in, it will be served back in 
-     * preference to the suggested msg parameter and the msg parameter will
-     * be ignored. 
+     * <p>If an error-page declaration has been made for the web
+     * application corresponding to the status code passed in, it will
+     * be served back in preference to the suggested msg parameter and
+     * the msg parameter will be ignored.</p>
      *
      * <p>If the response has already been committed, this method throws 
      * an IllegalStateException.
@@ -449,7 +456,26 @@ public interface HttpServletResponse extends ServletResponse {
      */
     public Collection<String> getHeaderNames();
 
-    
+    /**
+     * Set the supplier of trailer headers.
+     * The supplier will be called within the scope of whatever thread/call
+     * causes the response content to be completed. Typically this will
+     * be any thread calling close() on the output stream or writer.
+     *
+     * The trailers that run afoul of the provisions of section 4.1.2 of
+     * RFC 7230 are ignored.
+     *
+     * @implSpec
+     * The default implementation is a no-op.
+     *
+     * @param supplier the supplier of trailer headers
+     *
+     * @since Servlet 4.0
+     */
+    default public void setTrailers(Supplier<Map<String, String>> supplier) {
+    }
+
+
     /*
      * Server status codes; see RFC 2068.
      */

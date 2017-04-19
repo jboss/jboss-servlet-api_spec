@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2008-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -128,6 +128,10 @@ public interface Registration {
      * an initialization parameter with a <tt>null</tt> name or value, no
      * updates will be performed, and an IllegalArgumentException will be
      * thrown.
+     *
+     * <p>The returned set is not backed by the {@code Registration} object,
+     * so changes in the returned set are not reflected in the
+     * {@code Registration} object, and vice-versa.</p>
      *
      * @param initParameters the initialization parameters
      *

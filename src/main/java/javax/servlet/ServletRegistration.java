@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2008-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,6 +58,10 @@ public interface ServletRegistration extends Registration {
      *
      * <p>If this method is called multiple times, each successive call
      * adds to the effects of the former.
+     *
+     * <p>The returned set is not backed by the {@code ServletRegistration}
+     * object, so changes in the returned set are not reflected in the
+     * {@code ServletRegistration} object, and vice-versa.</p>
      *
      * @param urlPatterns the URL patterns of the servlet mapping
      *
@@ -156,6 +160,10 @@ public interface ServletRegistration extends Registration {
          * descriptor, then this method establishes the security constraint
          * for that pattern from the argument
          * <code>ServletSecurityElement</code>.
+         *
+         * <p>The returned set is not backed by the {@code Dynamic} object,
+         * so changes in the returned set are not reflected in the
+         * {@code Dynamic} object, and vice-versa.</p>
          * 
          * @param constraint the {@link ServletSecurityElement} to be applied
          * to the patterns mapped to this ServletRegistration
