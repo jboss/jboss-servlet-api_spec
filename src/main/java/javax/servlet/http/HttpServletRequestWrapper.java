@@ -160,8 +160,8 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
      * return getServletMapping() on the wrapped request object.</p>
      */
      @Override
-     public ServletMapping getServletMapping() {
-        return this._getHttpServletRequest().getServletMapping();
+     public HttpServletMapping getHttpServletMapping() {
+        return this._getHttpServletRequest().getHttpServletMapping();
     }
 
     /**
@@ -426,13 +426,24 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements 
     }
 
     /**
-     * The default behavior of this method is to call getTrailers on the
+     * The default behavior of this method is to call getTrailerFields on the
      * wrapped request object.
      *
      * @since Servlet 4.0
      */
     @Override
-    public Map<String, String> getTrailers() {
-        return this._getHttpServletRequest().getTrailers();
+    public Map<String, String> getTrailerFields() {
+        return this._getHttpServletRequest().getTrailerFields();
+    }
+
+    /**
+     * The default behavior of this method is to call isTrailerFieldsReady on the
+     * wrapped request object.
+     *
+     * @since Servlet 4.0
+     */
+    @Override
+    public boolean isTrailerFieldsReady() {
+        return this._getHttpServletRequest().isTrailerFieldsReady();
     }
 }

@@ -11,5 +11,5 @@ target
 *.ipr
 *.iws
 .idea
-
+*~
 

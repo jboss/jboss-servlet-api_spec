@@ -457,22 +457,46 @@ public interface HttpServletResponse extends ServletResponse {
     public Collection<String> getHeaderNames();
 
     /**
-     * Set the supplier of trailer headers.
-     * The supplier will be called within the scope of whatever thread/call
-     * causes the response content to be completed. Typically this will
-     * be any thread calling close() on the output stream or writer.
+     * Sets the supplier of trailer headers.
      *
-     * The trailers that run afoul of the provisions of section 4.1.2 of
-     * RFC 7230 are ignored.
+     * <p>The trailer header field value is defined as a comma-separated list
+     * (see Section 3.2.2 and Section 4.1.2 of RFC 7230).</p>
+     *
+     * <p>The supplier will be called within the scope of whatever thread/call
+     * causes the response content to be completed. Typically this will
+     * be any thread calling close() on the output stream or writer.</p>
+     *
+     * <p>The trailers that run afoul of the provisions of section 4.1.2 of
+     * RFC 7230 are ignored.</p>
      *
      * @implSpec
      * The default implementation is a no-op.
      *
      * @param supplier the supplier of trailer headers
      *
+     * @exception IllegalStateException if it is invoked after the response has
+     *         has been committed,
+     *         or the trailer is not supported in the request, for instance,
+     *         the underlying protocol is HTTP 1.0, or the response is not
+     *         in chunked encoding in HTTP 1.1.
+     *
      * @since Servlet 4.0
      */
-    default public void setTrailers(Supplier<Map<String, String>> supplier) {
+    default public void setTrailerFields(Supplier<Map<String, String>> supplier) {
+    }
+
+    /**
+     * Gets the supplier of trailer headers.
+     *
+     * @implSpec
+     * The default implememtation return null.
+     *
+     * @return <code>Supplier</code> of trailer headers
+     * 
+     * @since Servlet 4.0
+     */
+    default public Supplier<Map<String, String>> getTrailerFields() {
+        return null;
     }
 
 

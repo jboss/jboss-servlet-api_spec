@@ -253,46 +253,50 @@ public interface HttpServletRequest extends ServletRequest {
     public int getIntHeader(String name);
 
     /**
-     * <p>Return the {@link ServletMapping} by which the {@link
+     * <p>Return the {@link HttpServletMapping} by which the {@link
      * HttpServlet} for this {@code HttpServletRequest} was invoked.
      * The mappings for any applicable {@link javax.servlet.Filter}s are
      * not indicated in the result.  If the currently active {@link
      * javax.servlet.Servlet} invocation was obtained by a call to
      * {@link ServletRequest#getRequestDispatcher} followed by a call to
      * {@link RequestDispatcher#forward}, the returned {@code
-     * ServletMapping} is the one corresponding to the path used to
+     * HttpServletMapping} is the one corresponding to the path used to
      * obtain the {@link RequestDispatcher}.  If the currently active
      * {@code Servlet} invocation was obtained by a call to {@link
      * ServletRequest#getRequestDispatcher} followed by a call to {@link
-     * RequestDispatcher#include}, the returned {@code ServletMapping}
+     * RequestDispatcher#include}, the returned {@code HttpServletMapping}
      * is the one corresponding path that caused the first {@code
      * Servlet} in the invocation sequence to be invoked.  If the
      * currently active {@code Servlet} invocation was obtained by a
      * call to {@link javax.servlet.AsyncContext#dispatch}, the returned
-     * {@code ServletMapping} is the one corresponding path that caused
+     * {@code HttpServletMapping} is the one corresponding path that caused
      * the first {@code Servlet} in the invocation sequence to be
      * invoked.  See {@link
      * javax.servlet.RequestDispatcher#FORWARD_MAPPING}, {@link
      * javax.servlet.RequestDispatcher#INCLUDE_MAPPING} and {@link
      * javax.servlet.AsyncContext#ASYNC_MAPPING} for additional request
-     * attributes related to {@code ServletMapping}.</p>
+     * attributes related to {@code HttpServletMapping}.</p>
+     *
+     * <p>If the {@code Servlet} corresponding to this request was
+     * obtained using {@link javax.servlet.ServletContext#getNamedDispatcher}, this
+     * method must return {@code null}.</p>
      * 
      * <p>The returned object is immutable.  Servlet 4.0 compliant
      * implementations must override this method.</p>
      * 
      * @implSpec The default implementation returns a {@code
-     * ServletMapping} that returns the empty string for the match
+     * HttpServletMapping} that returns the empty string for the match
      * value, pattern and servlet name and {@code null} for the match
      * type.
      *
-     * @return An instance of {@code ServletMapping} describing the manner in which
+     * @return An instance of {@code HttpServletMapping} describing the manner in which
      * the current request was invoked.
      * 
      * @since 4.0
      */
     
-    default public ServletMapping getServletMapping() {
-        return new ServletMapping() {
+    default public HttpServletMapping getHttpServletMapping() {
+        return new HttpServletMapping() {
             @Override
             public String getMatchValue() {
                 return "";
@@ -851,23 +855,57 @@ public interface HttpServletRequest extends ServletRequest {
         throws IOException, ServletException;
 
     /**
-     * Get the request trailer.
-     * This method can only be called after the application reads all
-     * the request content.
+     * Get the request trailer fields.
+     *
+     * <p>The returned map is not backed by the {@code HttpServletRequest} object,
+     * so changes in the returned map are not reflected in the
+     * {@code HttpServletRequest} object, and vice-versa.</p>
+     * 
+     * <p>{@link #isTrailerFieldsReady()} should be called first to determine
+     * if it is safe to call this method without causing an exception.</p>
      *
      * @implSpec
-     * The default implementation returns null.
+     * The default implementation returns an empty map.
      * 
-     * @return A map of trailers or null if the request did not contain any
+     * @return A map of trailer fields in which all the keys are in lowercase,
+     * regardless of the case they had at the protocol level. If there are no
+     * trailer fields, yet {@link #isTrailerFieldsReady} is returning true,
+     * the empty map is returned.
      *
-     * @throws IllegalStateException if neither
-     * {@link javax.servlet.ReadListener#onAllDataRead} has been called nor
-     * an EOF indication has been returned from the 
-     * {@link #getReader} or {@link #getInputStream}
+     * @throws IllegalStateException if {@link #isTrailerFieldsReady()} is false
      *
      * @since Servlet 4.0
      */
-    default public Map<String, String> getTrailers() {
-        return null;
+    default public Map<String, String> getTrailerFields() {
+        return Collections.emptyMap();
+    }
+
+    /**
+     * Return a boolean indicating whether trailer fields are ready to read
+     * using {@link #getTrailerFields}.
+     *
+     * This methods returns true immediately if it is known that there is no
+     * trailer in the request, for instance, the underlying protocol (such
+     * as HTTP 1.0) does not supports the trailer fields, or the request is
+     * not in chunked encoding in HTTP 1.1.
+     * And the method also returns true if both of the following conditions
+     * are satisfied:
+     * <ol type="a">
+     *   <li> the application has read all the request data and an EOF
+     *        indication has been returned from the {@link #getReader}
+     *        or {@link #getInputStream}.
+     *   <li> all the trailer fields sent by the client have been received.
+     *        Note that it is possible that the client has sent no trailer fields.
+     * </ol>
+     *
+     * @implSpec
+     * The default implementation returns false.
+     *
+     * @return a boolean whether trailer fields are ready to read
+     *
+     * @since Servlet 4.0
+     */
+    default public boolean isTrailerFieldsReady() {
+        return true;
     }
 }
