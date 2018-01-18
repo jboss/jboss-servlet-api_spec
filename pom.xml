@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>24</version>
+    <version>25</version>
   </parent>
 
   <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -76,17 +76,20 @@
             <manifest>
               <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
             </manifest>
+            <manifestEntries>
+              <Automatic-Module-Name>beta.jboss.servlet.api_3_1</Automatic-Module-Name>
+            </manifestEntries>
           </archive>
           <instructions>
-            <Specification-Title>JSR 315: Java(TM) Servlet 3.0 Specification</Specification-Title>
+            <Specification-Title>JSR 315: Java(TM) Servlet 3.1 Specification</Specification-Title>
             <Specification-Vendor>Oracle</Specification-Vendor>
-            <Specification-Version>3.0</Specification-Version>
+            <Specification-Version>3.1</Specification-Version>
             <!--
                The JavaEE marketing version of the javax.servlet package was incremented 
                to 3.0.  However, this API is still compatible with servlet 2.x.
             -->
             <Export-Package>
-              javax.servlet*;version=3.0
+              javax.servlet*;version=3.1
             </Export-Package>
           </instructions>
         </configuration>
@@ -108,9 +111,9 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Specification-Title>JSR 315: Java(TM) Servlet 3.0 Specification</Specification-Title>
+              <Specification-Title>JSR 315: Java(TM) Servlet 3.1 Specification</Specification-Title>
               <Specification-Vendor>Oracle</Specification-Vendor>
-              <Specification-Version>3.0</Specification-Version>
+              <Specification-Version>3.1</Specification-Version>
             </manifestEntries>
           </archive>
         </configuration>
